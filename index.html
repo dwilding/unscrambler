@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translate</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <style>
+      input {
+        width: 100%;
+      }
+      .action {
+        text-align: right;
+      }
+      #translation {
+        display: none;
+      }
+      #translation.display {
+        display: inline;
+      }
+      #translation.stale {
+        background-color: var(--bg);
+      }
+      table {
+        width: 100%;
+      }
+      td:first-child {
+        width: 25%;
+      }
+      td > input {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section>
+        <p>
+          <input id="english" type="text" placeholder="English text…">
+        </p>
+        <p class="action">
+          <button id="translate" disabled>Translate</button>
+        </p>
+        <p>
+          <mark id="translation"></mark>
+        </p>
+      </section>
+      <section>
+        <table>
+          <tbody>
+            <tr>
+              <td>OpenAI API key</td>
+              <td>
+                <input id="config-keyOpenAI" type="text">
+              </td>
+            </tr>
+            <tr>
+              <td>DeepL API key</td>
+              <td>
+                <input id="config-keyDeepL" type="text">
+              </td>
+            </tr>
+            <tr>
+              <td>DeepL endpoint</td>
+              <td>
+                <input id="config-endpointDeepL" type="text">
+              </td>
+            </tr>
+            <tr>
+              <td><a href="https://developers.deepl.com/docs/resources/supported-languages#target-languages" target="_blank">Target language</td>
+              <td>
+                <input id="config-targetLanguage" type="text">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+    <script>
+      function translate() {
+        dom.translation.innerText = "Placeholder";
+        dom.translation.classList.add("display");
+        dom.translation.classList.remove("stale");
+      }
+      function showConfig() {
+        const config = JSON.parse(localStorage.getItem("config"));
+        for (const param in config) {
+          dom.config[param].value = config[param];
+        }
+      }
+      function saveConfig() {
+        const config = {};
+        for (const param in dom.config) {
+          config[param] = dom.config[param].value;
+        }
+        localStorage.setItem("config", JSON.stringify(config));
+      }
+      if (localStorage.getItem("config") === null) {
+        localStorage.setItem("config", JSON.stringify({
+          "keyOpenAI": "",
+          "keyDeepL": "",
+          "endpointDeepL": "api-free.deepl.com",
+          "targetLanguage": "ZH"
+        }));
+      }
+      const dom = {
+        english: document.getElementById("english"),
+        translate: document.getElementById("translate"),
+        translation: document.getElementById("translation"),
+        config: {
+          "keyOpenAI": document.getElementById("config-keyOpenAI"),
+          "keyDeepL": document.getElementById("config-keyDeepL"),
+          "endpointDeepL": document.getElementById("config-endpointDeepL"),
+          "targetLanguage": document.getElementById("config-targetLanguage")
+        }
+      };
+      dom.english.addEventListener("input", event => {
+        dom.translate.disabled = (dom.english.value.trim() == "");
+        dom.translation.classList.add("stale");
+      });
+      dom.english.addEventListener("keydown", event => {
+        if (!dom.translate.disabled && "key" in event && event.key.toLowerCase() == "enter") {
+          translate();
+        }
+      });
+      dom.translate.addEventListener("click", event => {
+        translate();
+      });
+      for (const param in dom.config) {
+        dom.config[param].addEventListener("input", event => {
+          saveConfig();
+        });
+      }
+      showConfig();
+    </script>
+  </body>
+</html>
