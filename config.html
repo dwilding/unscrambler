@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Config</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <style>
+      table {
+        width: 100%;
+      }
+      td:first-child {
+        width: 25%;
+      }
+      td > input {
+        width: 100%;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <table>
+        <tbody>
+          <tr>
+            <td>OpenAI API key</td>
+            <td>
+              <input id="keyOpenAI" type="text">
+            </td>
+          </tr>
+          <tr>
+            <td>DeepL API key</td>
+            <td>
+              <input id="keyDeepL" type="text">
+            </td>
+          </tr>
+          <tr>
+            <td>DeepL endpoint</td>
+            <td>
+              <input id="endpointDeepL" type="text">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+    <script>
+      function showConfig() {
+        const config = JSON.parse(localStorage.getItem("config"));
+        for (const param in config) {
+          dom[param].value = config[param];
+        }
+      }
+      function saveConfig() {
+        const config = {};
+        for (const param in dom) {
+          config[param] = dom[param].value;
+        }
+        localStorage.setItem("config", JSON.stringify(config));
+      }
+      if (localStorage.getItem("config") === null) {
+        localStorage.setItem("config", JSON.stringify({
+          keyOpenAI: "",
+          keyDeepL: "",
+          endpointDeepL: "api-free.deepl.com"
+        }));
+      }
+      const dom = {
+        keyOpenAI: document.getElementById("keyOpenAI"),
+        keyDeepL: document.getElementById("keyDeepL"),
+        endpointDeepL: document.getElementById("endpointDeepL")
+      };
+      for (const param in dom) {
+        dom[param].addEventListener("input", event => {
+          saveConfig();
+        });
+      }
+      showConfig();
+    </script>
+  </body>
+</html>

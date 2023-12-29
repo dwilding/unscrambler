@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translation</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <style>
+      mark {
+        display: none;
+      }
+      mark.display {
+        display: inline;
+      }
+      #loading {
+        text-align: center;
+        display: none;
+      }
+      #loading.display {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p>
+        <span id="input"></span>
+      </p>
+      <p>
+        <em id="english"></em>
+      </p>
+      <p>
+        <mark id="translation"></mark>
+      </p>
+      <p id="loading" class="display">
+        <!-- Loading animation is from https://codepen.io/aurer/pen/ZEJxpO -->
+        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;" xml:space="preserve"><rect x="0" y="13" width="4" height="5" fill="currentColor"><animate attributeName="height" attributeType="XML" values="5;21;5" begin="0s" dur="0.6s" repeatCount="indefinite" /><animate attributeName="y" attributeType="XML" values="13; 5; 13" begin="0s" dur="0.6s" repeatCount="indefinite" /></rect><rect x="10" y="13" width="4" height="5" fill="currentColor"><animate attributeName="height" attributeType="XML" values="5;21;5" begin="0.15s" dur="0.6s" repeatCount="indefinite" /><animate attributeName="y" attributeType="XML" values="13; 5; 13" begin="0.15s" dur="0.6s" repeatCount="indefinite" /></rect><rect x="20" y="13" width="4" height="5" fill="currentColor"><animate attributeName="height" attributeType="XML" values="5;21;5" begin="0.3s" dur="0.6s" repeatCount="indefinite" /><animate attributeName="y" attributeType="XML" values="13; 5; 13" begin="0.3s" dur="0.6s" repeatCount="indefinite" /></rect></svg>
+      </p>
+    </main>
+    <script>
+      async function translate(query) {
+        //
+        // STEP 1 - Use OpenAI to generate an English interpretation of the input query
+        //
+        let responseOpenAI;
+        responseOpenAI = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${config.keyOpenAI}`
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo-1106",
+            temperature: 0.3,
+            messages: [
+              {
+                role: "system",
+                content: "You are a language assistant. The user will try to express something, potentially using a mix of English and Chinese. You must rephrase the user's text in simple English. Do not respond with anything else; no discussion is needed. Your response must be easily understood by non-native speakers of English, so please keep the vocab and grammar as simple as possible."
+              },
+              {
+                role: "user",
+                content: query
+              }
+            ]
+          })
+        });
+        const resultOpenAI = await responseOpenAI.json();
+        const english = resultOpenAI.choices[0].message.content;
+        dom.english.innerText = english;
+        //
+        // STEP 2 - Use DeepL to translate the simple English interpretation
+        //
+        let responseDeepL;
+        responseDeepL = await fetch("https://deepl.dpw.me/post-deepl-request.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            key: config.keyDeepL,
+            endpoint: config.endpointDeepL,
+            text: english
+          })
+        });
+        const resultDeepL = await responseDeepL.json();
+        const translation = resultDeepL.text;
+        dom.translation.innerText = translation;
+        dom.translation.classList.add("display");
+        dom.loading.classList.remove("display");
+      }
+      const config = JSON.parse(localStorage.getItem("config"));
+      const dom = {
+        input: document.getElementById("input"),
+        english: document.getElementById("english"),
+        translation: document.getElementById("translation"),
+        loading: document.getElementById("loading")
+      };
+      let query = window.location.hash;
+      query = decodeURIComponent(query.substring(1));
+      dom.input.innerText = query;
+      translate(query);
+    </script>
+  </body>
+</html>
