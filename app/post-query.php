@@ -23,7 +23,7 @@ if ($request_body === null) {
 if (!array_key_exists('query', $request_body)) {
   respond_with_failure();
 }
-$query = $request_body['query'];
+$query = substr($request_body['query'], 0, 200);
 
 // Load secrets
 $secrets = json_decode(file_get_contents($_SERVER['APP_DIR_DATA'] . '/secrets.json'), true);
