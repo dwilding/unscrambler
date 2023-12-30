@@ -3,41 +3,67 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Translate</title>
+    <title>Unscrambler</title>
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
     <style>
-      p {
+      p.action {
         text-align: right;
+      }
+      footer a {
+        color: var(--text-light) !important;
       }
     </style>
   </head>
   <body>
     <main>
+      <p class="action">
+        <textarea id="query" placeholder="Write a mix of Chinese and English…" maxlength="200"></textarea>
+        <button id="unscramble" disabled>Unscramble</button>
+      </p>
       <p>
-        <textarea id="input" placeholder="What would you like to translate?"></textarea>
-        <button id="translate" disabled>Translate</button>
+        When you click <strong>Unscramble</strong>, an AI model will generate an English version of your input.
+        The English version will then be translated into Chinese.
+      </p>
+      <p>
+        Unscrambler uses <a href="https://platform.openai.com/docs/models/gpt-3-5" target="_blank">GPT-3.5 Turbo</a> to generate English text and
+        <a href="https://www.deepl.com/translator" target="_blank">DeepL</a> to translate from English to Chinese.
       </p>
     </main>
+    <footer>
+      <p>
+        Unscrambler is an experimental language assistant developed by <a href="https://github.com/dwilding" target="_blank">Dave Wilding</a>.
+        The interpretation of your input may be inaccurate.
+        Don't believe everything that Unscrambler tells you!
+      </p>
+      <p>
+        Acknowledgments:
+        <a href="https://simplecss.org" target="_blank">Simple.css</a>,
+        <a href="hhttps://codepen.io/aurer" target="_blank">Aurer</a>
+      </p>
+      <p>
+        <a href="https://github.com/dwilding/unscrambler" target="_blank">Source code</a>
+      </p>
+    </footer>
     <script>
-      function translate() {
-        const query = encodeURIComponent(dom.input.value.trim());
-        window.open(`translation#${query}`, "_blank");
+      function unscramble() {
+        const query = encodeURIComponent(dom.query.value.trim());
+        window.open(`/translation#${query}`, "_blank");
       }
       const dom = {
-        input: document.getElementById("input"),
-        translate: document.getElementById("translate")
+        query: document.getElementById("query"),
+        unscramble: document.getElementById("unscramble")
       };
-      dom.input.addEventListener("input", event => {
-        dom.translate.disabled = (dom.input.value.trim() == "");
+      dom.query.addEventListener("input", event => {
+        dom.unscramble.disabled = (dom.query.value.trim() == "");
       });
-      dom.input.addEventListener("keydown", event => {
-        if (!dom.translate.disabled && "key" in event && event.key.toLowerCase() == "enter") {
+      dom.query.addEventListener("keydown", event => {
+        if (!dom.unscramble.disabled && "key" in event && event.key.toLowerCase() == "enter") {
           event.preventDefault();
-          translate();
+          unscramble();
         }
       });
-      dom.translate.addEventListener("click", event => {
-        translate();
+      dom.unscramble.addEventListener("click", event => {
+        unscramble();
       });
     </script>
   </body>
