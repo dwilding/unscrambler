@@ -29,7 +29,32 @@ $query = $request_body['query'];
 $secrets = json_decode(file_get_contents($_SERVER['APP_DIR_DATA'] . '/secrets.json'), true);
 
 // Generate English text
-$english = 'I am a banana'; // TODO implement this properly
+$openai_request_data = [
+  'model' => 'gpt-3.5-turbo-1106',
+  'temperature' => 0.3,
+  'messages' => [
+    [
+      'role' => 'system',
+      'content' => 'You are a language assistant. The user will try to express something, potentially using a mix of English and Chinese. You must rephrase the user\'s text in simple English. Do not respond with anything else; no discussion is needed. Your response must be easily understood by non-native speakers of English, so please keep the vocab and grammar as simple as possible.'
+    ],
+    [
+      'role' => 'user',
+      'content' => $query
+    ]
+  ]
+];
+$openai_request = curl_init('https://api.openai.com/v1/chat/completions');
+curl_setopt($openai_request, CURLOPT_POST, 1);
+curl_setopt($openai_request, CURLOPT_POSTFIELDS, json_encode($openai_request_data));
+curl_setopt($openai_request, CURLOPT_HTTPHEADER, [
+  'Content-Type: application/json',
+  'Authorization: Bearer ' . $secrets['keyOpenAI']
+]);
+curl_setopt($openai_request, CURLOPT_RETURNTRANSFER, true);
+$openai_response = curl_exec($openai_request);
+curl_close($openai_request);
+$openai_result = json_decode($openai_response, true);
+$english = $openai_result['choices'][0]['message']['content'];
 
 // Translate English text
 $deepl_request_data = [
@@ -50,12 +75,13 @@ curl_setopt($deepl_request, CURLOPT_RETURNTRANSFER, true);
 $deepl_response = curl_exec($deepl_request);
 curl_close($deepl_request);
 $deepl_result = json_decode($deepl_response, true);
+$translated = $deepl_result['translations'][0]['text'];
 
 // Respond with English text and translated text
 echo json_encode([
   'success' => true,
   'english' => $english,
-  'translated' => $deepl_result['translations'][0]['text']
+  'translated' => $translated
 ]);
 
 ?>
