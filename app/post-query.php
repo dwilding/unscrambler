@@ -54,7 +54,7 @@ curl_setopt($openai_request, CURLOPT_RETURNTRANSFER, true);
 $openai_response = curl_exec($openai_request);
 curl_close($openai_request);
 $openai_result = json_decode($openai_response, true);
-$english = $openai_result['choices'][0]['message']['content'];
+$english = substr($openai_result['choices'][0]['message']['content'], 0, 500);
 
 // Translate English text
 $deepl_request_data = [
