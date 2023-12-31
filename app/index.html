@@ -139,6 +139,7 @@
         dom.unscramble.disabled = true;
         dom.instructions.classList.remove("display");
         dom.loading.classList.add("display");
+        dom.output.classList.remove("display");
         response = await fetch("/post-query", {
           method: "POST",
           headers: {
