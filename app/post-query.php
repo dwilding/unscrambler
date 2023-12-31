@@ -1,5 +1,8 @@
 <?php
 
+require $_SERVER['APP_DIR_PACKAGES'] . '/vendor/autoload.php';
+use Overtrue\Pinyin\Pinyin;
+
 header('Content-Type: application/json');
 
 function respond_with_failure() {
@@ -77,11 +80,14 @@ curl_close($deepl_request);
 $deepl_result = json_decode($deepl_response, true);
 $translated = $deepl_result['translations'][0]['text'];
 
+// Convert translated text to pinyin
+
 // Respond with English text and translated text
 echo json_encode([
   'success' => true,
   'english' => $english,
-  'translated' => $translated
+  'translated' => $translated,
+  'pinyin' => Pinyin::sentence($translated)->join(' ')
 ]);
 
 ?>
