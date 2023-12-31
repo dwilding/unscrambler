@@ -33,6 +33,7 @@ $secrets = json_decode(file_get_contents($_SERVER['APP_DIR_DATA'] . '/secrets.js
 
 // Generate English text
 function generate_english($query) {
+  global $secrets;
   $request_data = [
     'model' => 'gpt-3.5-turbo-1106',
     'temperature' => 0.3,
@@ -64,6 +65,7 @@ $english = substr(generate_english($query), 0, 500);
 
 // Translate English text
 function translate_english($english) {
+  global $secrets;
   $request_data = [
     'source_lang' => 'EN',
     'target_lang' => 'ZH',
@@ -88,6 +90,7 @@ $translated = translate_english($english);
 
 // Convert translated text to pinyin
 function convert_to_pinyin($translated) {
+  global $secrets;
   $pinyin = Pinyin::sentence($translated)->join(' ');
   $request_data = [
     'model' => 'gpt-3.5-turbo-1106',
