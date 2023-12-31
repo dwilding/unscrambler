@@ -102,7 +102,7 @@ function convert_to_pinyin($translated) {
       ],
       [
         'role' => 'user',
-        'content' => $query
+        'content' => $translated . "\n" . $pinyin
       ]
     ]
   ];
