@@ -86,13 +86,6 @@
       ]) {
         dom[id] = document.getElementById(id);
       }
-      function resetView() {
-        dom.query.value = "";
-        dom.unscramble.disabled = true;
-        dom.instructions.classList.add("display");
-        dom.loading.classList.remove("display");
-        dom.output.classList.remove("display");
-      }
       function restart() {
         const hash = parseHash();
         if (hash === null) {
@@ -168,16 +161,22 @@
         dom.unscramble.disabled = !canUnscramble();
       });
       dom.query.addEventListener("keydown", event => {
-        if ("key" in event && event.key.toLowerCase() == "enter" && canUnscramble()) {
+        if ("key" in event && event.key.toLowerCase() == "enter") {
           event.preventDefault();
-          unscramble();
+          if (canUnscramble()) {
+            unscramble();
+          }
         }
       });
       dom.unscramble.addEventListener("click", event => {
         unscramble();
       });
       window.addEventListener("popstate", event => {
-        resetView();
+        dom.query.value = "";
+        dom.unscramble.disabled = true;
+        dom.instructions.classList.add("display");
+        dom.loading.classList.remove("display");
+        dom.output.classList.remove("display");
         if (event.state === null) {
           restart();
         }
