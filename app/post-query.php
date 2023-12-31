@@ -126,7 +126,8 @@ echo json_encode([
   'success' => true,
   'english' => $english,
   'translated' => $translated,
-  'pinyin' => $pinyin
+  'pinyin' => $pinyin,
+  'pinyin_debug' => Pinyin::sentence($translated)->join(' ')
 ]);
 
 ?>
