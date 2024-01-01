@@ -98,7 +98,7 @@ function convert_to_pinyin($translated) {
     'messages' => [
       [
         'role' => 'system',
-        'content' => 'You are a language assistant. The user will provide Chinese text followed by a pinyin transliteration. The transliteration will not account for polyphones, so some words might be inaccurate. You must respond with an accurate transliteration. Do not respond with anything else; no discussion is needed. Please also adjust the spacing around punctuation to be more natural.'
+        'content' => 'You are a language assistant. The user will provide Chinese text followed by a pinyin transliteration. The transliteration will not account for polyphones, so some words might be inaccurate. You must respond with an accurate transliteration. Do not respond with anything else; no discussion is needed. Please also adjust the word and punctuation spacing to be more natural.'
       ],
       [
         'role' => 'user',
