@@ -55,6 +55,10 @@
         <p class="action">
           <a id="details" href="#" target="_blank">Translation details</a>
         </p>
+        <details>
+          <summary>Pinyin</summary>
+          <p id="pinyin"></p>
+        </details>
       </div>
     </main>
     <footer>
@@ -66,7 +70,8 @@
       <p>
         Acknowledgments:
         <a href="https://simplecss.org" target="_blank">Simple.css</a>,
-        <a href="https://codepen.io/aurer" target="_blank">Aurer</a>
+        <a href="https://codepen.io/aurer" target="_blank">Aurer</a>,
+        <a href="https://github.com/overtrue/pinyin" target="_blank">overtrue/pinyin</a>
       </p>
       <p>
         <a href="https://github.com/dwilding/unscrambler" target="_blank">Source code</a>
@@ -82,7 +87,8 @@
         "output",
         "english",
         "translated",
-        "details"
+        "details",
+        "pinyin"
       ]) {
         dom[id] = document.getElementById(id);
       }
@@ -156,6 +162,7 @@
         dom.english.innerText = result.english;
         dom.translated.innerText = result.translated;
         dom.details.href = `https://www.deepl.com/translator#en/zh/${encodeURIComponent(result.english)}`;
+        dom.pinyin.innerText = result.pinyin;
       }
       dom.query.addEventListener("input", event => {
         dom.unscramble.disabled = !canUnscramble();
