@@ -91,8 +91,8 @@ $translated = call_deepl($english);
 
 // Convert translated text to pinyin
 $pinyin1 = Pinyin::sentence($translated)->join(' ');
-$pinyin2 = call_gpt(0.3, $translated . "\n" . $pinyin1, 'You are a language assistant. The user will provide Chinese text followed by a pinyin transliteration. The transliteration will not account for polyphones, so some words might be inaccurate. You must respond with an accurate transliteration. Do not respond with anything else; no discussion is needed.');
-$pinyin3 = call_gpt(0.3, $translated . "\n" . $pinyin2, 'You are a language assistant. The user will provide Chinese text followed by a pinyin transliteration. You must make the word spacing and punctuation spacing of the transliteration look as natural as possible. Respond with the updated transliteration only; no discussion is needed.');
+$pinyin2 = call_gpt(0.3, $translated . "\n" . $pinyin1, 'You are a language assistant. The user will provide Chinese text on line 1 followed by a pinyin transliteration on line 2. The transliteration will not account for polyphones, so some words might be inaccurate. You must respond with an accurate transliteration. Do not respond with anything else; no discussion is needed.');
+$pinyin3 = call_gpt(0.3, $translated . "\n" . $pinyin2, 'You are a language assistant. The user will provide Chinese text on line 1 followed by a pinyin transliteration on line 2. You must make the word spacing and punctuation spacing of the transliteration look as natural as possible. Respond with the updated transliteration only; no discussion is needed.');
 
 // Respond with English text and translated text
 echo json_encode([
