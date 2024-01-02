@@ -34,7 +34,7 @@
         <p>
           When you click <strong>Unscramble</strong>, an AI model will generate an English version of your input.
           The English version will then be translated into Chinese.
-          <a href="#zh/你是不是%20talking%20about%20春节的%20traditions?">Show me an example</a>
+          <a id="example" href="#zh/你是不是%20talking%20about%20春节的%20traditions?">Show me an example</a>
         </p>
         <p>
           Unscrambler uses <a href="https://platform.openai.com/docs/models/gpt-3-5" target="_blank">GPT-3.5 Turbo</a>
@@ -85,6 +85,7 @@
         "query",
         "unscramble",
         "instructions",
+        "example",
         "loading",
         "output",
         "english",
@@ -178,6 +179,11 @@
         }
       });
       dom.unscramble.addEventListener("click", event => {
+        unscramble();
+      });
+      dom.example.addEventListener("click", event => {
+        event.preventDefault();
+        dom.query.value = "你是不是 talking about 春节的 traditions?";
         unscramble();
       });
       window.addEventListener("popstate", event => {
