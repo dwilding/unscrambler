@@ -15,6 +15,6 @@ The pinyin version of the Chinese translation is hidden by default, so that you 
  2. [DeepL](https://www.deepl.com/translator) translates the English version into Chinese (no pinyin).
 
  3. [overtrue/pinyin](https://github.com/overtrue/pinyin) generates an initial pinyin version of the Chinese translation.
-    Because of polyphones such as 行, the initial pinyin version might not be 100% accurate.
+    Because of polyphones such as 行, the pinyin might not be 100% accurate.
 
  4. GPT-3.5 Turbo corrects and formats the pinyin.
