@@ -30,8 +30,14 @@ $query = substr($request_body['query'], 0, 200);
 
 // Prepare to call APIs
 $secrets = json_decode(file_get_contents($_SERVER['APP_DIR_DATA'] . '/secrets.json'), true);
+$metrics = [
+  'gpt_tokens_prompt' => 0,
+  'gpt_tokens_generated' => 0,
+  'deepl_chars_input' => 0,
+  'deepl_chars_output' => 0 
+];
 function call_gpt($temperature, $user, $system) {
-  global $secrets;
+  global $secrets, $metrics;
   $request_data = [
     'model' => 'gpt-3.5-turbo-1106',
     'temperature' => $temperature,
@@ -57,10 +63,12 @@ function call_gpt($temperature, $user, $system) {
   $response = curl_exec($request);
   curl_close($request);
   $result = json_decode($response, true);
+  $metrics['gpt_tokens_prompt'] += $result['usage']['prompt_tokens'];
+  $metrics['gpt_tokens_generated'] += $result['usage']['completion_tokens'];
   return $result['choices'][0]['message']['content'];
 }
 function call_deepl($text) {
-  global $secrets;
+  global $secrets, $metrics;
   $request_data = [
     'source_lang' => 'EN',
     'target_lang' => 'ZH',
@@ -79,7 +87,10 @@ function call_deepl($text) {
   $response = curl_exec($request);
   curl_close($request);
   $result = json_decode($response, true);
-  return $result['translations'][0]['text'];
+  $translated = $result['translations'][0]['text'];
+  $metrics['deepl_chars_input'] += mb_strlen($text, 'UTF-8');
+  $metrics['deepl_chars_output'] += mb_strlen($translated, 'UTF-8');
+  return $translated;
 }
 
 // Generate English text
@@ -100,6 +111,7 @@ echo json_encode([
   'english' => $english,
   'translated' => $translated,
   'pinyin' => $pinyin3,
+  'metrics' => $metrics
 ]);
 
 ?>
