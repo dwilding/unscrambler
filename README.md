@@ -1,6 +1,6 @@
 # Unscrambler — Translate a mix of Chinese and English
 
-[Unscrambler](https://uscrambler.dpw.me) is an experimental language assistant for people who are trying to improve their Chinese skills - e.g., me!
+[Unscrambler](https://unscrambler.dpw.me) is an experimental tool for people who are trying to improve their Chinese skills - e.g., me!
 
 If you're trying to express something in Chinese, but don't know all the vocabulary or grammar, you can type your best effort into Unscrambler and use English for the parts you don't know. Unscrambler will rephrase what you're trying to say (using simple English) and then provide a Chinese translation.
 
@@ -17,4 +17,4 @@ The pinyin version of the Chinese translation is hidden by default, so that you 
  3. [overtrue/pinyin](https://github.com/overtrue/pinyin) generates an initial pinyin version of the Chinese translation.
     Because of polyphones such as 行, the initial pinyin version might not be 100% accurate.
 
- 4. [GPT-3.5 Turbo](https://platform.openai.com/docs/models/gpt-3-5) corrects and formats the pinyin version of the Chinese translation.
+ 4. GPT-3.5 Turbo corrects and formats the pinyin version of the Chinese translation.
