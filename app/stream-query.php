@@ -3,30 +3,21 @@
 require $_SERVER['APP_DIR_PACKAGES'] . '/vendor/autoload.php';
 use Overtrue\Pinyin\Pinyin;
 
-header('Content-Type: application/json');
+header('Content-Type: text/event-stream');
 
 function respond_with_failure() {
-  echo json_encode([
+  echo 'data: ' . json_encode([
     'success' => false
-  ]);
+  ]) . "\n\n";
+  ob_flush();
   exit();
 }
 
-// Get request body
-$request_body_json = file_get_contents('php://input');
-if ($request_body_json === false) {
-  respond_with_failure();
-}
-$request_body = json_decode($request_body_json, true);
-if ($request_body === null) {
-  respond_with_failure();
-}
-
 // Get query
-if (!array_key_exists('query', $request_body)) {
+if (!array_key_exists('q', $_GET)) {
   respond_with_failure();
 }
-$query = mb_substr($request_body['query'], 0, 200, 'UTF-8');
+$query = mb_substr($_GET['q'], 0, 200, 'UTF-8');
 
 // Prepare to call APIs
 $secrets = json_decode(file_get_contents($_SERVER['APP_DIR_DATA'] . '/secrets.json'), true);
@@ -97,21 +88,40 @@ function call_deepl($text) {
 $english = call_gpt(0.3, $query, 'You are a language assistant. The user will try to express something using a mix of Chinese and English. You must rephrase the user\'s text in simple English. Do not respond with anything else; no discussion is needed. Your response must be easily understood by non-native speakers of English, so please keep the vocab and grammar as simple as possible. If the user\'s text is already in simple English, you can return the text as is.');
 $english = mb_substr($english, 0, 500, 'UTF-8');
 
+// Respond with English text
+echo 'data: ' . json_encode([
+  'success' => true,
+  'sequence' => 0,
+  'english' => $english
+]) . "\n\n";
+ob_flush();
+
 // Translate English text
 $translated = call_deepl($english);
+
+// Respond with translated text
+echo 'data: ' . json_encode([
+  'success' => true,
+  'sequence' => 1,
+  'english' => $english,
+  'translated' => $translated
+]) . "\n\n";
+ob_flush();
 
 // Convert translated text to pinyin
 $pinyin1 = Pinyin::sentence($translated)->join(' ');
 $pinyin2 = call_gpt(0.3, $translated . "\n" . $pinyin1, 'You are a language assistant. The user will provide Chinese text on line 1 followed by a pinyin transliteration on line 2. The transliteration will not account for polyphones, so some words might be inaccurate. You must respond with an accurate transliteration. Do not respond with anything else; no discussion is needed.');
 $pinyin3 = call_gpt(0.3, $translated . "\n" . $pinyin2, 'You are a language assistant. The user will provide Chinese text on line 1 followed by a pinyin transliteration on line 2. You must make the word spacing and punctuation spacing of the transliteration look as natural as possible. Respond with the updated transliteration only; no discussion is needed.');
 
-// Respond with English text and translated text
-echo json_encode([
+// Respond with pinyin and usage metrics
+echo 'data: ' . json_encode([
   'success' => true,
+  'sequence' => 2,
   'english' => $english,
   'translated' => $translated,
   'pinyin' => $pinyin3,
   'metrics' => $metrics
-]);
+]) . "\n\n";
+ob_flush();
 
 ?>

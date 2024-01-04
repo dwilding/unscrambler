@@ -42,22 +42,28 @@
           to interpret your input
         </p>
       </div>
+      <div id="outputEnglish">
+        <p>
+          <em id="english"></em>
+        </p>
+      </div>
+      <div id="outputTranslated">
+        <p>
+          <mark id="translated"></mark>
+        </p>
+      </div>
+      <div id="outputPinyin">
+        <details>
+          <summary>Pinyin</summary>
+          <p id="pinyin"></p>
+        </details>
+      </div>
       <div id="loading">
         <p>
           <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;" xml:space="preserve"><rect x="0" y="13" width="4" height="5" fill="currentColor"><animate attributeName="height" attributeType="XML" values="5;21;5" begin="0s" dur="0.6s" repeatCount="indefinite" /><animate attributeName="y" attributeType="XML" values="13; 5; 13" begin="0s" dur="0.6s" repeatCount="indefinite" /></rect><rect x="10" y="13" width="4" height="5" fill="currentColor"><animate attributeName="height" attributeType="XML" values="5;21;5" begin="0.15s" dur="0.6s" repeatCount="indefinite" /><animate attributeName="y" attributeType="XML" values="13; 5; 13" begin="0.15s" dur="0.6s" repeatCount="indefinite" /></rect><rect x="20" y="13" width="4" height="5" fill="currentColor"><animate attributeName="height" attributeType="XML" values="5;21;5" begin="0.3s" dur="0.6s" repeatCount="indefinite" /><animate attributeName="y" attributeType="XML" values="13; 5; 13" begin="0.3s" dur="0.6s" repeatCount="indefinite" /></rect></svg>
         </p>
       </div>
-      <div id="output">
-        <p>
-          <em id="english"></em>
-        </p>
-        <p>
-          <mark id="translated"></mark>
-        </p>
-        <details>
-          <summary>Pinyin</summary>
-          <p id="pinyin"></p>
-        </details>
+      <div id="outputDetails">
         <p class="action">
           <a id="details" href="#" target="_blank">Translation details</a>
         </p>
@@ -87,7 +93,10 @@
         "instructions",
         "example",
         "loading",
-        "output",
+        "outputEnglish",
+        "outputTranslated",
+        "outputDetails",
+        "outputPinyin",
         "english",
         "translated",
         "details",
@@ -136,36 +145,50 @@
         }
         return true;
       }
-      async function unscramble() {
+      function unscramble() {
         const query = dom.query.value.trim();
         dom.unscramble.disabled = true;
         dom.instructions.classList.remove("display");
         dom.loading.classList.add("display");
-        dom.output.classList.remove("display");
-        response = await fetch("/post-query", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            query: query
-          })
-        });
-        const result = await response.json();
-        display(result);
-        history.pushState({
-          query: query,
-          result: result
-        }, null, `#zh/${query}`);
-      }
-      function display(result) {
-        dom.instructions.classList.remove("display");
-        dom.loading.classList.remove("display");
-        dom.output.classList.add("display");
-        dom.english.innerText = result.english;
-        dom.translated.innerText = result.translated;
-        dom.details.href = `https://www.deepl.com/translator#en/zh/${encodeURIComponent(result.english)}`;
-        dom.pinyin.innerText = result.pinyin;
+        dom.outputEnglish.classList.remove("display");
+        dom.outputTranslated.classList.remove("display");
+        dom.outputDetails.classList.remove("display");
+        dom.outputPinyin.classList.remove("display");
+        const stream = new EventSource(`/stream-query?q=${encodeURIComponent(query)}`);
+        stream.onmessage = event => {
+          const result = JSON.parse(event.data);
+          if (!result.success) {
+            dom.loading.classList.remove("display");
+            stream.close();
+            return;
+          }
+          switch (result.sequence) {
+            case 0: {
+              dom.outputEnglish.classList.add("display");
+              dom.english.innerText = result.english;
+              break;
+            }
+            case 1: {
+              dom.outputTranslated.classList.add("display");
+              dom.translated.innerText = result.translated;
+              dom.outputDetails.classList.add("display");
+              dom.details.href = `https://www.deepl.com/translator#en/zh/${encodeURIComponent(result.english)}`;
+              break;
+            }
+            case 2: {
+              dom.outputPinyin.classList.add("display");
+              dom.pinyin.innerText = result.pinyin;
+            }
+            default: {
+              dom.loading.classList.remove("display");
+              stream.close();
+              history.pushState({
+                query: query,
+                result: result
+              }, null, `#zh/${query}`);
+            }
+          }
+        };
       }
       dom.query.addEventListener("input", event => {
         dom.unscramble.disabled = !canUnscramble();
@@ -187,17 +210,30 @@
         unscramble();
       });
       window.addEventListener("popstate", event => {
-        dom.query.value = "";
-        dom.unscramble.disabled = true;
-        dom.instructions.classList.add("display");
-        dom.loading.classList.remove("display");
-        dom.output.classList.remove("display");
         if (event.state === null) {
+          dom.query.value = "";
+          dom.unscramble.disabled = true;
+          dom.instructions.classList.add("display");
+          dom.loading.classList.remove("display");
+          dom.outputEnglish.classList.remove("display");
+          dom.outputTranslated.classList.remove("display");
+          dom.outputDetails.classList.remove("display");
+          dom.outputPinyin.classList.remove("display");
           restart();
         }
         else {
           dom.query.value = event.state.query;
-          display(event.state.result);
+          dom.unscramble.disabled = true;
+          dom.instructions.classList.remove("display");
+          dom.loading.classList.remove("display");
+          dom.outputEnglish.classList.add("display");
+          dom.english.innerText = event.state.result.english;
+          dom.outputTranslated.classList.add("display");
+          dom.translated.innerText = event.state.result.translated;
+          dom.outputDetails.classList.add("display");
+          dom.details.href = `https://www.deepl.com/translator#en/zh/${encodeURIComponent(event.state.result.english)}`;
+          dom.outputPinyin.classList.add("display");
+          dom.pinyin.innerText = event.state.result.pinyin;
         }
       });
       restart();
