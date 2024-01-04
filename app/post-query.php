@@ -26,7 +26,7 @@ if ($request_body === null) {
 if (!array_key_exists('query', $request_body)) {
   respond_with_failure();
 }
-$query = substr($request_body['query'], 0, 200);
+$query = mb_substr($request_body['query'], 0, 200, 'UTF-8');
 
 // Prepare to call APIs
 $secrets = json_decode(file_get_contents($_SERVER['APP_DIR_DATA'] . '/secrets.json'), true);
@@ -95,7 +95,7 @@ function call_deepl($text) {
 
 // Generate English text
 $english = call_gpt(0.3, $query, 'You are a language assistant. The user will try to express something using a mix of Chinese and English. You must rephrase the user\'s text in simple English. Do not respond with anything else; no discussion is needed. Your response must be easily understood by non-native speakers of English, so please keep the vocab and grammar as simple as possible. If the user\'s text is already in simple English, you can return the text as is.');
-$english = substr($english, 0, 500);
+$english = mb_substr($english, 0, 500, 'UTF-8');
 
 // Translate English text
 $translated = call_deepl($english);
