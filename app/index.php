@@ -4,7 +4,6 @@ require $_SERVER['APP_DIR_FUNCTIONS'] . '/main.php';
 $secrets = json_decode(file_get_contents($_SERVER['APP_DIR_DATA'] . '/secrets.json'), true);
 
 // For the default view (no query), show the instructions only
-$state = null;
 $dom = [
   'html_state' => '',
   'query_value' => '',
