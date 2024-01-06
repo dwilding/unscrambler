@@ -156,25 +156,25 @@
         const stream = new EventSource(`/stream-query?q=${encodeURIComponent(query)}`);
         stream.onmessage = event => {
           const result = JSON.parse(event.data);
-          if (!result.success) {
+          if (!("sequence" in result)) {
             dom.loading.classList.remove("display");
             stream.close();
             return;
           }
           switch (result.sequence) {
-            case 0: {
+            case 1: {
               dom.outputEnglish.classList.add("display");
               dom.english.innerText = result.english;
               break;
             }
-            case 1: {
+            case 2: {
               dom.outputTranslated.classList.add("display");
               dom.translated.innerText = result.translated;
               dom.outputDetails.classList.add("display");
               dom.details.href = `https://www.deepl.com/translator#en/zh/${encodeURIComponent(result.english)}`;
               break;
             }
-            case 2: {
+            case 3: {
               dom.outputPinyin.classList.add("display");
               dom.pinyin.innerText = result.pinyin;
             }
