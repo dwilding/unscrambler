@@ -156,17 +156,16 @@ if (array_key_exists('q', $_GET)) {
       ]) {
         dom[id] = document.getElementById(id);
       }
-      let pendingStream = null;
+      let stream = null;
       function streamStart() {
         dom.loading.classList.add("display");
-        const stream = new EventSource(`/stream-query?q=${encodeURIComponent(dom.query.value)}`);
-        pendingStream = stream;
+        stream = new EventSource(`/stream-query?q=${encodeURIComponent(dom.query.value)}`);
         stream.onmessage = event => {
           const state = JSON.parse(event.data);
           if (!("sequence" in state)) {
             dom.loading.classList.remove("display");
             stream.close();
-            pendingStream = null;
+            stream = null;
             return;
           }
           switch (state.sequence) {
@@ -190,7 +189,7 @@ if (array_key_exists('q', $_GET)) {
               history.replaceState(state, null, `/?q=${encodeURIComponent(state.query)}`);
               dom.loading.classList.remove("display");
               stream.close();
-              pendingStream = null;
+              stream = null;
             }
           }
         };
@@ -211,14 +210,14 @@ if (array_key_exists('q', $_GET)) {
       dom.query.addEventListener("keydown", event => {
         if ("key" in event && event.key.toLowerCase() == "enter") {
           event.preventDefault();
-          if (dom.query.value.trim() != "" && pendingStream === null) {
+          if (dom.query.value.trim() != "" && stream === null) {
             unscramble();
           }
         }
       });
       dom.unscramble.addEventListener("click", event => {
         event.preventDefault();
-        if (dom.query.value.trim() != "" && pendingStream === null) {
+        if (dom.query.value.trim() != "" && stream === null) {
           unscramble();
         }
       });
@@ -228,9 +227,9 @@ if (array_key_exists('q', $_GET)) {
         unscramble();
       });
       window.addEventListener("popstate", event => {
-        if (pendingStream !== null) {
-          pendingStream.close();
-          pendingStream = null;
+        if (stream !== null) {
+          stream.close();
+          stream = null;
         }
         if (event.state === null) {
           dom.query.value = "";
