@@ -1,0 +1,277 @@
+<?php
+
+require $_SERVER['APP_DIR_FUNCTIONS'] . '/main.php';
+$secrets = json_decode(file_get_contents($_SERVER['APP_DIR_DATA'] . '/secrets.json'), true);
+
+// For the default view (no query), show the instructions only
+$state = null;
+$dom = [
+  'html_state' => '',
+  'query_value' => '',
+  'instructions_class' => 'display',
+  'outputEnglish_class' => '',
+  'outputTranslated_class' => '',
+  'outputPinyin_class' => '',
+  'outputDetails_class' => '',
+  'english_value' => '',
+  'translated_value' => '',
+  'pinyin_value' => '',
+  'details_href' => ''
+];
+
+// If a query was provided, show the output
+//   stream=no -> full output
+//   otherwise -> query only; JS will stream in the rest
+if (array_key_exists('q', $_GET)) {
+  header('Cache-Control: no-cache');
+  $state = [
+    'sequence' => 0,
+    'query' => mb_substr($_GET['q'], 0, 200, 'UTF-8')
+  ];
+  $dom['query_value'] = htmlspecialchars($state['query']);
+  $dom['instructions_class'] = ''; // remove 'display' class
+  if (array_key_exists('stream', $_GET) && $_GET['stream'] == 'no') {
+    add_english($state, $secrets);
+    add_translated($state, $secrets);
+    add_pinyin($state, $secrets);
+    $dom['outputEnglish_class'] = 'display';
+    $dom['outputTranslated_class'] = 'display';
+    $dom['outputPinyin_class'] = 'display';
+    $dom['outputDetails_class'] = 'display';
+    $dom['english_value'] = htmlspecialchars($state['english']);
+    $dom['translated_value'] = htmlspecialchars($state['translated']);
+    $dom['pinyin_value'] = htmlspecialchars($state['pinyin']);
+    $dom['details_href'] = htmlspecialchars('https://www.deepl.com/translator#en/zh/' . rawurlencode($state['english']));
+  }
+  $dom['html_state'] = htmlspecialchars(json_encode($state));
+}
+
+?>
+<!DOCTYPE html>
+<html lang="en" data-state="<?= $dom['html_state'] ?>">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unscrambler</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <style>
+      p.action {
+        text-align: right;
+      }
+      div {
+        display: none;
+      }
+      div.display {
+        display: block;
+      }
+      #loading {
+        text-align: center;
+        color: var(--text-light);
+      }
+      footer a {
+        color: var(--text-light) !important;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <form action="/" method="GET">
+        <p class="action">
+          <input type="hidden" name="stream" value="no">
+          <textarea id="query" required name="q" maxlength="200" placeholder="Write a mix of Chinese and English…"><?= $dom['query_value'] ?></textarea>
+          <button id="unscramble" type="submit">Unscramble</button>
+        </p>
+      </form>
+      <div id="instructions" class="<?= $dom['instructions_class'] ?>">
+        <p>
+          When you click <strong>Unscramble</strong>, an AI model will generate an English version of your input.
+          The English version will then be translated into Chinese.
+          <a id="example" href="/?stream=no&q=你是不是%20talking%20about%20春节的%20traditions%3F">Get started with an example</a>
+        </p>
+        <p>
+          Unscrambler uses GPT and DeepL to interpret your input.
+          <a href="https://github.com/dwilding/unscrambler/#unscrambler--translate-a-mix-of-chinese-and-english" target="_blank">Learn more</a>
+        </p>
+      </div>
+      <div id="outputEnglish" class="<?= $dom['outputEnglish_class'] ?>">
+        <p>
+          <em id="english"><?= $dom['english_value'] ?></em>
+        </p>
+      </div>
+      <div id="outputTranslated" class="<?= $dom['outputTranslated_class'] ?>">
+        <p>
+          <mark id="translated"><?= $dom['translated_value'] ?></mark>
+        </p>
+      </div>
+      <div id="outputPinyin" class="<?= $dom['outputPinyin_class'] ?>">
+        <details>
+          <summary>Pinyin</summary>
+          <p id="pinyin"><?= $dom['pinyin_value'] ?></p>
+        </details>
+      </div>
+      <div id="loading">
+        <p>
+          <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;" xml:space="preserve"><rect x="0" y="13" width="4" height="5" fill="currentColor"><animate attributeName="height" attributeType="XML" values="5;21;5" begin="0s" dur="0.6s" repeatCount="indefinite" /><animate attributeName="y" attributeType="XML" values="13; 5; 13" begin="0s" dur="0.6s" repeatCount="indefinite" /></rect><rect x="10" y="13" width="4" height="5" fill="currentColor"><animate attributeName="height" attributeType="XML" values="5;21;5" begin="0.15s" dur="0.6s" repeatCount="indefinite" /><animate attributeName="y" attributeType="XML" values="13; 5; 13" begin="0.15s" dur="0.6s" repeatCount="indefinite" /></rect><rect x="20" y="13" width="4" height="5" fill="currentColor"><animate attributeName="height" attributeType="XML" values="5;21;5" begin="0.3s" dur="0.6s" repeatCount="indefinite" /><animate attributeName="y" attributeType="XML" values="13; 5; 13" begin="0.3s" dur="0.6s" repeatCount="indefinite" /></rect></svg>
+        </p>
+      </div>
+      <div id="outputDetails" class="<?= $dom['outputDetails_class'] ?>">
+        <p class="action">
+          <a id="details" href="<?= $dom['details_href'] ?>" target="_blank">Translation details</a>
+        </p>
+      </div>
+    </main>
+    <footer>
+      <p>
+        Unscrambler is an experimental language assistant developed by <a href="https://github.com/dwilding" target="_blank">Dave Wilding</a>.
+        The interpretation of your input may be inaccurate.
+        Don't believe everything that Unscrambler tells you!
+      </p>
+      <p>
+        Acknowledgments:
+        <a href="https://simplecss.org" target="_blank">Simple.css</a>,
+        <a href="https://codepen.io/aurer" target="_blank">Aurer</a>,
+        <a href="https://github.com/overtrue/pinyin" target="_blank">overtrue/pinyin</a>
+      </p>
+      <p>
+        <a href="https://github.com/dwilding/unscrambler" target="_blank">Source code</a>
+        •
+        <a href="https://maybecoding.bearblog.dev/blog/" target="_blank">Dev blog</a>
+      </p>
+    </footer>
+    <script>
+      const dom = {};
+      for (const id of [
+        "query",
+        "unscramble",
+        "instructions",
+        "example",
+        "loading",
+        "outputEnglish",
+        "outputTranslated",
+        "outputDetails",
+        "outputPinyin",
+        "english",
+        "translated",
+        "details",
+        "pinyin"
+      ]) {
+        dom[id] = document.getElementById(id);
+      }
+      let pendingStream = null;
+      function streamStart() {
+        dom.loading.classList.add("display");
+        const stream = new EventSource(`/stream-query?q=${encodeURIComponent(dom.query.value)}`);
+        pendingStream = stream;
+        stream.onmessage = event => {
+          const state = JSON.parse(event.data);
+          if (!("sequence" in state)) {
+            dom.loading.classList.remove("display");
+            stream.close();
+            pendingStream = null;
+            return;
+          }
+          switch (state.sequence) {
+            case 1: {
+              dom.outputEnglish.classList.add("display");
+              dom.english.innerText = state.english;
+              break;
+            }
+            case 2: {
+              dom.outputTranslated.classList.add("display");
+              dom.translated.innerText = state.translated;
+              dom.outputDetails.classList.add("display");
+              dom.details.href = `https://www.deepl.com/translator#en/zh/${encodeURIComponent(state.english)}`;
+              break;
+            }
+            case 3: {
+              dom.outputPinyin.classList.add("display");
+              dom.pinyin.innerText = state.pinyin;
+            }
+            default: {
+              history.replaceState(state, null, `/?q=${encodeURIComponent(state.query)}`);
+              dom.loading.classList.remove("display");
+              stream.close();
+              pendingStream = null;
+            }
+          }
+        };
+      }
+      function unscramble() {
+        const state = {
+          sequence: 0,
+          query: dom.query.value
+        };
+        history.pushState(state, null, `/?q=${encodeURIComponent(state.query)}`);
+        dom.instructions.classList.remove("display");
+        dom.outputEnglish.classList.remove("display");
+        dom.outputTranslated.classList.remove("display");
+        dom.outputPinyin.classList.remove("display");
+        dom.outputDetails.classList.remove("display");
+        streamStart();
+      }
+      dom.query.addEventListener("keydown", event => {
+        if ("key" in event && event.key.toLowerCase() == "enter") {
+          event.preventDefault();
+          if (dom.query.value.trim() != "" && pendingStream === null) {
+            unscramble();
+          }
+        }
+      });
+      dom.unscramble.addEventListener("click", event => {
+        event.preventDefault();
+        if (dom.query.value.trim() != "" && pendingStream === null) {
+          unscramble();
+        }
+      });
+      dom.example.addEventListener("click", event => {
+        event.preventDefault();
+        dom.query.value = "你是不是 talking about 春节的 traditions?";
+        unscramble();
+      });
+      window.addEventListener("popstate", event => {
+        if (pendingStream !== null) {
+          pendingStream.close();
+          pendingStream = null;
+        }
+        if (event.state === null) {
+          dom.query.value = "";
+          dom.instructions.classList.add("display");
+          dom.outputEnglish.classList.remove("display");
+          dom.outputTranslated.classList.remove("display");
+          dom.outputPinyin.classList.remove("display");
+          dom.outputDetails.classList.remove("display");
+          dom.loading.classList.remove("display");
+        }
+        else {
+          dom.query.value = event.state.query;
+          dom.instructions.classList.remove("display");
+          if (event.state.sequence == 0) {
+            dom.outputEnglish.classList.remove("display");
+            dom.outputTranslated.classList.remove("display");
+            dom.outputPinyin.classList.remove("display");
+            dom.outputDetails.classList.remove("display");
+            streamStart();
+          }
+          else {
+            dom.outputEnglish.classList.add("display");
+            dom.outputTranslated.classList.add("display");
+            dom.outputPinyin.classList.add("display");
+            dom.outputDetails.classList.add("display");
+            dom.english.innerText = event.state.english;
+            dom.translated.innerText = event.state.translated;
+            dom.pinyin.innerText = event.state.pinyin;
+            dom.details.href = `https://www.deepl.com/translator#en/zh/${encodeURIComponent(event.state.english)}`;
+            dom.loading.classList.remove("display");
+          }
+        }
+      });
+      if (document.documentElement.getAttribute("data-state") != "") {
+        const state = JSON.parse(document.documentElement.getAttribute("data-state"));
+        history.replaceState(state, null, `/?q=${encodeURIComponent(state.query)}`);
+        if (state.sequence == 0) {
+          streamStart();
+        }
+      }
+    </script>
+  </body>
+</html>
