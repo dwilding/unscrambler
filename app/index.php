@@ -78,7 +78,7 @@ if (array_key_exists('q', $_GET)) {
         <p class="action">
           <input type="hidden" name="stream" value="no">
           <textarea id="query" required name="q" maxlength="200" placeholder="Write a mix of Chinese and English…"><?= $dom['query_value'] ?></textarea>
-          <button id="unscramble" type="submit">Unscramble</button>
+          <button id="unscramble">Unscramble</button>
         </p>
       </form>
       <div id="instructions" class="<?= $dom['instructions_class'] ?>">
