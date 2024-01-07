@@ -85,7 +85,7 @@ if (array_key_exists('q', $_GET)) {
         <p>
           When you click <strong>Unscramble</strong>, an AI model will generate an English version of your input.
           The English version will then be translated into Chinese.
-          <a id="example" href="/?stream=no&q=你是不是%20talking%20about%20春节的%20traditions%3F">Get started with an example</a>
+          <a id="example" href="/?stream=no&q=我想%20stay%20两个%20weeks%20在中国">Get started with an example</a>
         </p>
         <p>
           Unscrambler uses GPT and DeepL to interpret your input.
@@ -223,7 +223,7 @@ if (array_key_exists('q', $_GET)) {
       });
       dom.example.addEventListener("click", event => {
         event.preventDefault();
-        dom.query.value = "你是不是 talking about 春节的 traditions?";
+        dom.query.value = "我想 stay 两个 weeks 在中国";
         unscramble();
       });
       window.addEventListener("popstate", event => {
