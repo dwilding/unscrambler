@@ -134,7 +134,7 @@ if (array_key_exists('q', $_GET)) {
         Acknowledgments:
         <a href="https://simplecss.org" target="_blank">Simple.css</a>,
         <a href="https://codepen.io/aurer" target="_blank">Aurer</a>,
-        <a href="https://github.com/overtrue/pinyin" target="_blank">overtrue/pinyin</a>
+        <a href="https://github.com/overtrue/pinyin" target="_blank">overtrue/pinyin</a>,
         <a href="https://www.fiverr.com/mackwhyte" target="_blank">mackwhyte</a>
       </p>
       <p>
