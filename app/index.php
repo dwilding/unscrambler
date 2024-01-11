@@ -38,11 +38,11 @@ if (array_key_exists('q', $_GET)) {
     $dom['english_value'] = htmlspecialchars($state['english']);
     $dom['translated_value'] = htmlspecialchars($state['translated']);
     $dom['pinyin_value'] = htmlspecialchars($state['pinyin']);
+    if ($state['query'] == '我想 stay 两个 weeks 在中国') {
+      $dom['tips_class'] = 'display';
+    }
   }
   $dom['html_state'] = htmlspecialchars(json_encode($state));
-  if ($state['query'] == '我想 stay 两个 weeks 在中国') {
-    $dom['tips_class'] = 'display';
-  }
 }
 
 ?>
