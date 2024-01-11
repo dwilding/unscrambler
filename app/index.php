@@ -11,11 +11,10 @@ $dom = [
   'outputEnglish_class' => '',
   'outputTranslated_class' => '',
   'outputPinyin_class' => '',
-  'outputDetails_class' => '',
   'english_value' => '',
   'translated_value' => '',
   'pinyin_value' => '',
-  'details_href' => ''
+  'tips_class' => ''
 ];
 
 // If a query was provided, show the output
@@ -36,13 +35,14 @@ if (array_key_exists('q', $_GET)) {
     $dom['outputEnglish_class'] = 'display';
     $dom['outputTranslated_class'] = 'display';
     $dom['outputPinyin_class'] = 'display';
-    $dom['outputDetails_class'] = 'display';
     $dom['english_value'] = htmlspecialchars($state['english']);
     $dom['translated_value'] = htmlspecialchars($state['translated']);
     $dom['pinyin_value'] = htmlspecialchars($state['pinyin']);
-    $dom['details_href'] = htmlspecialchars('https://www.deepl.com/translator#en/zh/' . rawurlencode($state['english']));
   }
   $dom['html_state'] = htmlspecialchars(json_encode($state));
+  if ($state['query'] == '我想 stay 两个 weeks 在中国') {
+    $dom['tips_class'] = 'display';
+  }
 }
 
 ?>
@@ -113,9 +113,10 @@ if (array_key_exists('q', $_GET)) {
           <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;" xml:space="preserve"><rect x="0" y="13" width="4" height="5" fill="currentColor"><animate attributeName="height" attributeType="XML" values="5;21;5" begin="0s" dur="0.6s" repeatCount="indefinite" /><animate attributeName="y" attributeType="XML" values="13; 5; 13" begin="0s" dur="0.6s" repeatCount="indefinite" /></rect><rect x="10" y="13" width="4" height="5" fill="currentColor"><animate attributeName="height" attributeType="XML" values="5;21;5" begin="0.15s" dur="0.6s" repeatCount="indefinite" /><animate attributeName="y" attributeType="XML" values="13; 5; 13" begin="0.15s" dur="0.6s" repeatCount="indefinite" /></rect><rect x="20" y="13" width="4" height="5" fill="currentColor"><animate attributeName="height" attributeType="XML" values="5;21;5" begin="0.3s" dur="0.6s" repeatCount="indefinite" /><animate attributeName="y" attributeType="XML" values="13; 5; 13" begin="0.3s" dur="0.6s" repeatCount="indefinite" /></rect></svg>
         </p>
       </div>
-      <div id="outputDetails" class="<?= $dom['outputDetails_class'] ?>">
-        <p class="action">
-          <a id="details" href="<?= $dom['details_href'] ?>" target="_blank">Translation details</a>
+      <div id="tips" class="<?= $dom['tips_class'] ?>">
+        <p>
+          <strong>Tip:</strong> You can also use pinyin in your input.
+          <a id="example2" href="/?stream=no&q=zhe%20ge%20city%20has%20a%20hen%20you%20yi%20si%20de%20history">Try another example</a>
         </p>
       </div>
     </main>
@@ -147,11 +148,9 @@ if (array_key_exists('q', $_GET)) {
         "loading",
         "outputEnglish",
         "outputTranslated",
-        "outputDetails",
         "outputPinyin",
         "english",
         "translated",
-        "details",
         "pinyin"
       ]) {
         dom[id] = document.getElementById(id);
@@ -177,8 +176,6 @@ if (array_key_exists('q', $_GET)) {
             case 2: {
               dom.outputTranslated.classList.add("display");
               dom.translated.innerText = state.translated;
-              dom.outputDetails.classList.add("display");
-              dom.details.href = `https://www.deepl.com/translator#en/zh/${encodeURIComponent(state.english)}`;
               break;
             }
             case 3: {
@@ -204,7 +201,6 @@ if (array_key_exists('q', $_GET)) {
         dom.outputEnglish.classList.remove("display");
         dom.outputTranslated.classList.remove("display");
         dom.outputPinyin.classList.remove("display");
-        dom.outputDetails.classList.remove("display");
         streamStart();
       }
       dom.query.addEventListener("keydown", event => {
@@ -237,7 +233,6 @@ if (array_key_exists('q', $_GET)) {
           dom.outputEnglish.classList.remove("display");
           dom.outputTranslated.classList.remove("display");
           dom.outputPinyin.classList.remove("display");
-          dom.outputDetails.classList.remove("display");
           dom.loading.classList.remove("display");
         }
         else {
@@ -247,18 +242,15 @@ if (array_key_exists('q', $_GET)) {
             dom.outputEnglish.classList.remove("display");
             dom.outputTranslated.classList.remove("display");
             dom.outputPinyin.classList.remove("display");
-            dom.outputDetails.classList.remove("display");
             streamStart();
           }
           else {
             dom.outputEnglish.classList.add("display");
             dom.outputTranslated.classList.add("display");
             dom.outputPinyin.classList.add("display");
-            dom.outputDetails.classList.add("display");
             dom.english.innerText = event.state.english;
             dom.translated.innerText = event.state.translated;
             dom.pinyin.innerText = event.state.pinyin;
-            dom.details.href = `https://www.deepl.com/translator#en/zh/${encodeURIComponent(event.state.english)}`;
             dom.loading.classList.remove("display");
           }
         }
