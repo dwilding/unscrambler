@@ -151,7 +151,9 @@ if (array_key_exists('q', $_GET)) {
         "outputPinyin",
         "english",
         "translated",
-        "pinyin"
+        "pinyin",
+        "tips",
+        "example2"
       ]) {
         dom[id] = document.getElementById(id);
       }
@@ -220,7 +222,16 @@ if (array_key_exists('q', $_GET)) {
       dom.example.addEventListener("click", event => {
         event.preventDefault();
         dom.query.value = "我想 stay 两个 weeks 在中国";
+        dom.tips.classList.add("display");
         unscramble();
+      });
+      dom.example2.addEventListener("click", event => {
+        event.preventDefault();
+        if (stream === null) {
+          dom.query.value = "zhe ge city has a hen you yi si de history";
+          dom.tips.classList.remove("display");
+          unscramble();
+        }
       });
       window.addEventListener("popstate", event => {
         if (stream !== null) {
@@ -230,6 +241,7 @@ if (array_key_exists('q', $_GET)) {
         if (event.state === null) {
           dom.query.value = "";
           dom.instructions.classList.add("display");
+          dom.tips.classList.remove("display");
           dom.outputEnglish.classList.remove("display");
           dom.outputTranslated.classList.remove("display");
           dom.outputPinyin.classList.remove("display");
@@ -238,6 +250,12 @@ if (array_key_exists('q', $_GET)) {
         else {
           dom.query.value = event.state.query;
           dom.instructions.classList.remove("display");
+          if (dom.query.value == "我想 stay 两个 weeks 在中国") {
+            dom.tips.classList.add("display");
+          }
+          else {
+            dom.tips.classList.remove("display");
+          }
           if (event.state.sequence == 0) {
             dom.outputEnglish.classList.remove("display");
             dom.outputTranslated.classList.remove("display");
