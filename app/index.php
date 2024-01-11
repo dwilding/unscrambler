@@ -49,9 +49,11 @@ if (array_key_exists('q', $_GET)) {
 <!DOCTYPE html>
 <html lang="en" data-state="<?= $dom['html_state'] ?>">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="An experimental tool for people who want to improve their Chinese skills">
     <title>Unscrambler</title>
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" id="icon">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/manifest.webmanifest">
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
     <style>
       p.action {
@@ -131,6 +133,7 @@ if (array_key_exists('q', $_GET)) {
         <a href="https://simplecss.org" target="_blank">Simple.css</a>,
         <a href="https://codepen.io/aurer" target="_blank">Aurer</a>,
         <a href="https://github.com/overtrue/pinyin" target="_blank">overtrue/pinyin</a>
+        <a href="https://www.fiverr.com/mackwhyte" target="_blank">mackwhyte</a>
       </p>
       <p>
         <a href="https://github.com/dwilding/unscrambler" target="_blank">Source code</a>
