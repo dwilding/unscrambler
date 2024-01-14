@@ -78,8 +78,11 @@ if ($admin && array_key_exists('task', $_GET) && array_key_exists('q', $_GET)) {
           <input type="hidden" name="key" value="<?= $dom['key_value'] ?>">
           <input type="hidden" name="stream" value="no">
           <textarea id="query" required name="q"><?= $dom['query_value'] ?></textarea>
-          <button id="review" formmethod="get" formaction="/tutor?task=review">Review</button>
-          <button id="explain" formmethod="get" formaction="/tutor?task=explain">Explain</button>
+          <select name="task">
+            <option value="review">Review</option>
+            <option value="explain">Explain</option>
+          </select>
+          <button id="go">Go</button>
         </p>
       </form>
       <div id="instructions" class="<?= $dom['instructions_class'] ?>">
