@@ -15,8 +15,8 @@ $dom = [
 
 $admin = FALSE;
 if (array_key_exists('key', $_GET)) {
-  $dom['key_value'] = htmlspecialchars($GET['key']);
-  if ($GET['key'] == $secrets['keyAdmin']) {
+  $dom['key_value'] = htmlspecialchars($_GET['key']);
+  if ($_GET['key'] == $secrets['keyAdmin']) {
     $admin = TRUE;
   }
 }
