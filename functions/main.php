@@ -30,12 +30,12 @@ function add_pinyin(&$state, $secrets) {
     0.3,
     true,
     $state['translated'],
-    'You are a language assistant. The user will provide Chinese text. You must split the text into individual clauses based on how Chinese is typically spoken. You must also remove any punctuation. Respond with a JSON object with a key called "clauses" that contains an array of the clauses.'
+    'You are a language assistant. The user will provide Chinese text. You must split the text into individual phrases (词组). You must also remove any punctuation. Respond with a JSON object with a key called "array" that contains an array of the phrases.'
   );
-  $clauses = json_decode($gpt_data['output'], true)['clauses'];
-  foreach ($clauses as $clause) {
-    $pinyin = Pinyin::sentence($clause)->join(' ');
-    $state['pinyin'] .= '<p>' . htmlspecialchars($clause) . '<br>' . htmlspecialchars($pinyin) . '</p>';
+  $phrases = json_decode($gpt_data['output'], true)['array'];
+  foreach ($phrases as $phrase) {
+    $pinyin = Pinyin::sentence($phrase)->join(' ');
+    $state['pinyin'] .= '<p>' . htmlspecialchars($phrase) . '<br>' . htmlspecialchars($pinyin) . '</p>';
   }
 }
 
