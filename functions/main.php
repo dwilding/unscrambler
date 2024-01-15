@@ -25,17 +25,17 @@ function add_translated(&$state, $secrets) {
 function add_pinyin(&$state, $secrets) {
   $state['sequence'] = 3;
   $state['pinyin'] = '<summary>Pinyin</summary>';
+  $pinyin = Pinyin::sentence($state['translated'])->join(' ');
   $gpt_data = call_gpt(
     $secrets,
     0.3,
     true,
-    $state['translated'],
-    'You are a language assistant. The user will provide Chinese text. You must split the text into individual phrases (词组). You must also remove any punctuation. Respond with a JSON object with a key called "array" that contains an array of the phrases.'
+    $state['translated'] . "\n" . $pinyin,
+    'You are a language assistant. The user will provide Chinese text on line 1 followed by a pinyin transliteration on line 2. You must split the text into individual phrases (词组). You must also remove any punctuation. Respond with a JSON object with a key called "array" that contains an array of the phrases. Each element of the array must be a JSON object with a key called "hanzi" and a key called "pinyin".'
   );
   $phrases = json_decode($gpt_data['output'], true)['array'];
   foreach ($phrases as $phrase) {
-    $pinyin = Pinyin::sentence($phrase)->join(' ');
-    $state['pinyin'] .= '<p>' . htmlspecialchars($phrase) . '<br>' . htmlspecialchars($pinyin) . '</p>';
+    $state['pinyin'] .= '<p>' . htmlspecialchars($phrase['hanzi']) . '<br>' . htmlspecialchars($phrase['pinyin']) . '</p>';
   }
 }
 
