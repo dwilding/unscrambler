@@ -107,10 +107,7 @@ if (array_key_exists('q', $_GET)) {
         </p>
       </div>
       <div id="outputPinyin" class="<?= $dom['outputPinyin_class'] ?>">
-        <details>
-          <summary>Pinyin</summary>
-          <div id="pinyin" class="display"><?= $dom['pinyin_html'] ?></div>
-        </details>
+        <details id="pinyin"><?= $dom['pinyin_html'] ?></details>
       </div>
       <div id="loading">
         <p>

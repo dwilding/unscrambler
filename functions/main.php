@@ -40,7 +40,7 @@ function add_pinyin(&$state, $secrets) {
   // );
   // $pinyin = $gpt_data['output'];
   $state['sequence'] = 3;
-  $state['pinyin'] = '<p>' . htmlspecialchars($pinyin) . '</p>';
+  $state['pinyin'] = '<summary>Pinyin</summary><p>' . htmlspecialchars($pinyin) . '</p>';
 }
 
 ?>
