@@ -37,7 +37,7 @@ if (array_key_exists('q', $_GET)) {
     $dom['outputPinyin_class'] = 'display';
     $dom['english_value'] = htmlspecialchars($state['english']);
     $dom['translated_value'] = htmlspecialchars($state['translated']);
-    $dom['pinyin_html'] = htmlspecialchars($state['pinyin']);
+    $dom['pinyin_html'] = $state['pinyin'];
     if ($state['query'] == '我想 stay 两个 weeks 在中国') {
       $dom['tips_class'] = 'display';
     }
