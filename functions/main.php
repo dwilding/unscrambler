@@ -23,26 +23,24 @@ function add_translated(&$state, $secrets) {
 
 function add_pinyin(&$state, $secrets) {
   $pinyin = Pinyin::sentence($state['translated'])->join(' ');
-  $state['p0'] = $pinyin;
-  // Pinyin might be innacurate because of polyphones. Use GPT to correct the pinyin
-  $gpt_data = call_gpt(
-    $secrets,
-    0.3,
-    $state['translated'] . "\n" . $pinyin,
-    'You are a language assistant. The user will provide Chinese text on line 1 followed by a pinyin transliteration on line 2. The transliteration will not account for polyphones, so some words might be inaccurate. You must respond with an accurate transliteration. Do not respond with anything else; no discussion is needed.'
-  );
-  $pinyin = $gpt_data['output'];
-  $state['p1'] = $pinyin;
-  // Use GPT to format the pinyin (3.5 Turbo can't simultaneously correct and format pinyin)
-  $gpt_data = call_gpt(
-    $secrets,
-    0.3,
-    $state['translated'] . "\n" . $pinyin, 
-    'You are a language assistant. The user will provide Chinese text on line 1 followed by a pinyin transliteration on line 2. You must make the word spacing and punctuation spacing of the transliteration look as natural as possible. Respond with the updated transliteration only; no discussion is needed.'
-  );
-  $pinyin = $gpt_data['output'];
+  // // Pinyin might be innacurate because of polyphones. Use GPT to correct the pinyin
+  // $gpt_data = call_gpt(
+  //   $secrets,
+  //   0.3,
+  //   $state['translated'] . "\n" . $pinyin,
+  //   'You are a language assistant. The user will provide Chinese text on line 1 followed by a pinyin transliteration on line 2. The transliteration will not account for polyphones, so some words might be inaccurate. You must respond with an accurate transliteration. Do not respond with anything else; no discussion is needed.'
+  // );
+  // $pinyin = $gpt_data['output'];
+  // // Use GPT to format the pinyin (3.5 Turbo can't simultaneously correct and format pinyin)
+  // $gpt_data = call_gpt(
+  //   $secrets,
+  //   0.3,
+  //   $state['translated'] . "\n" . $pinyin, 
+  //   'You are a language assistant. The user will provide Chinese text on line 1 followed by a pinyin transliteration on line 2. You must make the word spacing and punctuation spacing of the transliteration look as natural as possible. Respond with the updated transliteration only; no discussion is needed.'
+  // );
+  // $pinyin = $gpt_data['output'];
   $state['sequence'] = 3;
-  $state['pinyin'] = $pinyin;
+  $state['pinyin'] = '<p>' . $pinyin . '</p>';
 }
 
 ?>
