@@ -23,14 +23,14 @@ function add_translated(&$state, $secrets) {
 }
 
 function add_pinyin(&$state, $secrets) {
-  $clauses = call_gpt(
+  $gpt_data = call_gpt(
     $secrets,
     0.3,
     TRUE,
     $state['translated'],
-    'You are a language assistant. The user will provide Chinese text. You must split the text into individual clauses based on how Chinese is typically spoken. You must also remove any punctuation. Respond with a flat JSON array of clauses.'
+    'You are a language assistant. The user will provide Chinese text. You must split the text into individual clauses based on how Chinese is typically spoken. You must also remove any punctuation. Respond with a JSON object with a key called "clauses" that contains an array of the clauses.'
   );
-  $state['clauses'] = $clauses;
+  $state['clauses'] = $gpt_data['output'];
   $pinyin = Pinyin::sentence($state['translated'])->join(' ');
   // // Pinyin might be innacurate because of polyphones. Use GPT to correct the pinyin
   // $gpt_data = call_gpt(
