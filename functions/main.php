@@ -8,6 +8,7 @@ function add_english(&$state, $secrets) {
   $gpt_data = call_gpt(
     $secrets,
     0.3,
+    FALSE,
     $state['query'],
     'You are a language assistant. The user will try to express something using a mix of Chinese and English. You must rephrase the user\'s text in simple English. Do not respond with anything else; no discussion is needed. Your response must be easily understood by non-native speakers of English, so please keep the vocab and grammar as simple as possible. If the user\'s text is already in simple English, you can return the text as is.'
   );
@@ -22,6 +23,14 @@ function add_translated(&$state, $secrets) {
 }
 
 function add_pinyin(&$state, $secrets) {
+  $clauses = call_gpt(
+    $secrets,
+    0.3,
+    TRUE,
+    $state['translated'],
+    'You are a language assistant. The user will provide Chinese text. You must split the text into individual clauses based on how Chinese is typically spoken. You must also remove any punctuation. Respond with a flat JSON array of clauses.'
+  );
+  $state['clauses'] = $clauses;
   $pinyin = Pinyin::sentence($state['translated'])->join(' ');
   // // Pinyin might be innacurate because of polyphones. Use GPT to correct the pinyin
   // $gpt_data = call_gpt(

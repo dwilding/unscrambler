@@ -1,6 +1,6 @@
 <?php
 
-function call_gpt($secrets, $temperature, $user, $system) {
+function call_gpt($secrets, $temperature, $expect_json, $user, $system) {
   $request_data = [
     'model' => 'gpt-3.5-turbo-1106',
     'temperature' => $temperature,
@@ -15,6 +15,11 @@ function call_gpt($secrets, $temperature, $user, $system) {
       ]
     ]
   ];
+  if ($expect_json) {
+    $request_data['response_format'] = [
+      'type' => 'json_object'
+    ];
+  }
   $request = curl_init('https://api.openai.com/v1/chat/completions');
   curl_setopt($request, CURLOPT_POST, 1);
   curl_setopt($request, CURLOPT_POSTFIELDS, json_encode($request_data));
