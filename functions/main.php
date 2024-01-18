@@ -1,8 +1,6 @@
 <?php
 
 require $_SERVER['APP_DIR_FUNCTIONS'] . '/services.php';
-require $_SERVER['APP_DIR_PACKAGES'] . '/vendor/autoload.php';
-use Overtrue\Pinyin\Pinyin;
 
 function add_english(&$state, $secrets) {
   $result = call_gpt(
