@@ -92,7 +92,7 @@ if (array_key_exists('q', $_GET)) {
           <a id="example" href="/?stream=no&q=我想%20stay%20两个%20weeks%20在中国">Get started with an example</a>
         </p>
         <p>
-          Unscrambler uses services from OpenAI and Microsoft to interpret your input.
+          Unscrambler interprets your input using OpenAI and Microsoft services.
           <a href="https://github.com/dwilding/unscrambler/#unscrambler--translate-a-mix-of-chinese-and-english" target="_blank">Learn more</a>
         </p>
       </div>
