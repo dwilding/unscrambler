@@ -37,7 +37,7 @@ if (array_key_exists('q', $_GET)) {
     $dom['outputPinyin_class'] = 'display';
     $dom['english_value'] = htmlspecialchars($state['english']);
     $dom['translated_value'] = htmlspecialchars($state['translated']);
-    $dom['pinyin_html'] = htmlspecialchars($state['pinyin_html']);
+    $dom['pinyin_html'] = $state['pinyinHTML'];
     if ($state['query'] == '我想 stay 两个 weeks 在中国') {
       $dom['tips_class'] = 'display';
     }
@@ -183,7 +183,7 @@ if (array_key_exists('q', $_GET)) {
             }
             case 3: {
               dom.outputPinyin.classList.add("display");
-              dom.pinyin.innerText = state.pinyin;
+              dom.pinyin.innerHTML = state.pinyinHTML;
             }
             default: {
               history.replaceState(state, null, `/?q=${encodeURIComponent(state.query)}`);
@@ -269,7 +269,7 @@ if (array_key_exists('q', $_GET)) {
             dom.outputPinyin.classList.add("display");
             dom.english.innerText = event.state.english;
             dom.translated.innerText = event.state.translated;
-            dom.pinyin.innerText = event.state.pinyin;
+            dom.pinyin.innerHTML = event.state.pinyinHTML;
             dom.loading.classList.remove("display");
             if (dom.query.value == "我想 stay 两个 weeks 在中国") {
               dom.tips.classList.add("display");
