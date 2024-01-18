@@ -12,9 +12,4 @@ The pinyin version of the Chinese translation is hidden by default, so that you 
 
  1. [GPT-3.5 Turbo](https://platform.openai.com/docs/models/gpt-3-5) generates an English version of your input.
 
- 2. [DeepL](https://www.deepl.com/translator) translates the English version into Chinese (without pinyin).
-
- 3. [overtrue/pinyin](https://github.com/overtrue/pinyin) generates an initial pinyin version.
-    Because of polyphones such as 行, the pinyin might not be 100% accurate.
-
- 4. GPT-3.5 Turbo corrects and formats the pinyin.
+ 2. [Azure AI Translator](https://azure.microsoft.com/en-us/products/ai-services/ai-translator/) translates the English version into Chinese.

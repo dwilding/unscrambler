@@ -19,49 +19,35 @@ function call_gpt($secrets, $temperature, $user, $system) {
   curl_setopt($request, CURLOPT_POST, 1);
   curl_setopt($request, CURLOPT_POSTFIELDS, json_encode($request_data));
   curl_setopt($request, CURLOPT_HTTPHEADER, [
-    'Content-Type: application/json',
+    'Content-Type: application/json; charset=UTF-8',
     'Authorization: Bearer ' . $secrets['keyOpenAI']
   ]);
   curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
   $response = curl_exec($request);
   curl_close($request);
   $result = json_decode($response, true);
-  return [
-    'output' => $result['choices'][0]['message']['content'],
-    'metrics' => [
-      'gpt_tokens_prompt' => $result['usage']['prompt_tokens'],
-      'gpt_tokens_generated' => $result['usage']['completion_tokens']
-    ]
-  ];
+  return $result['choices'][0]['message']['content'];
 }
 
-function call_deepl($secrets, $text) {
+function call_azure_translate($secrets, $text) {
   $request_data = [
-    'source_lang' => 'EN',
-    'target_lang' => 'ZH',
-    'text' => [
-      $text
+    [
+      'Text' => $text
     ]
   ];
-  $request = curl_init('https://api-free.deepl.com/v2/translate');
+  $request = curl_init('https://api-nam.cognitive.microsofttranslator.com/translate?api-version=3.0&from=en&to=zh-Hans&toScript=Latn&includeSentenceLength=true');
   curl_setopt($request, CURLOPT_POST, 1);
   curl_setopt($request, CURLOPT_POSTFIELDS, json_encode($request_data));
   curl_setopt($request, CURLOPT_HTTPHEADER, [
-    'Content-Type: application/json',
-    'Authorization: DeepL-Auth-Key ' . $secrets['keyDeepL']
+    'Content-Type: application/json; charset=UTF-8',
+    'Ocp-Apim-Subscription-Region: eastus',
+    'Ocp-Apim-Subscription-Key: ' . $secrets['keyAzureTranslator']
   ]);
   curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
   $response = curl_exec($request);
   curl_close($request);
   $result = json_decode($response, true);
-  $output = $result['translations'][0]['text'];
-  return [
-    'output' => $output,
-    'metrics' => [
-      'deepl_chars_input' => mb_strlen($text, 'UTF-8'),
-      'deepl_chars_output' => mb_strlen($output, 'UTF-8')
-    ]
-  ];
+  return $result[0];
 }
 
 ?>

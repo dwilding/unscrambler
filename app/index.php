@@ -31,7 +31,7 @@ if (array_key_exists('q', $_GET)) {
   if (array_key_exists('stream', $_GET) && $_GET['stream'] == 'no') {
     add_english($state, $secrets);
     add_translated($state, $secrets);
-    add_pinyin($state, $secrets);
+    add_pinyin_breakdown($state, $secrets);
     $dom['outputEnglish_class'] = 'display';
     $dom['outputTranslated_class'] = 'display';
     $dom['outputPinyin_class'] = 'display';
@@ -92,7 +92,7 @@ if (array_key_exists('q', $_GET)) {
           <a id="example" href="/?stream=no&q=我想%20stay%20两个%20weeks%20在中国">Get started with an example</a>
         </p>
         <p>
-          Unscrambler uses GPT and DeepL to interpret your input.
+          Unscrambler uses services from OpenAI and Microsoft to interpret your input.
           <a href="https://github.com/dwilding/unscrambler/#unscrambler--translate-a-mix-of-chinese-and-english" target="_blank">Learn more</a>
         </p>
       </div>
@@ -134,7 +134,6 @@ if (array_key_exists('q', $_GET)) {
         Acknowledgments:
         <a href="https://simplecss.org" target="_blank">Simple.css</a>,
         <a href="https://codepen.io/aurer" target="_blank">Aurer</a>,
-        <a href="https://github.com/overtrue/pinyin" target="_blank">overtrue/pinyin</a>,
         <a href="https://www.fiverr.com/mackwhyte" target="_blank">mackwhyte</a>
       </p>
       <p>

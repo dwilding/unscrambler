@@ -1,5 +1,3 @@
 {
-  "require": {
-    "overtrue/pinyin": "^5.3"
-  }
+  "require": {}
 }
