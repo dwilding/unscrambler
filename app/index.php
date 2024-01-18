@@ -31,7 +31,7 @@ if (array_key_exists('q', $_GET)) {
   if (array_key_exists('stream', $_GET) && $_GET['stream'] == 'no') {
     add_english($state, $secrets);
     add_translated($state, $secrets);
-    add_pinyin_breakdown($state, $secrets);
+    add_pinyin_html($state, $secrets);
     $dom['outputEnglish_class'] = 'display';
     $dom['outputTranslated_class'] = 'display';
     $dom['outputPinyin_class'] = 'display';

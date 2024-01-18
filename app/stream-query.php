@@ -20,7 +20,7 @@ ob_flush();
 add_translated($state, $secrets);
 echo 'data: ' . json_encode($state) . "\n\n";
 ob_flush();
-add_pinyin_breakdown($state, $secrets);
+add_pinyin_html($state, $secrets);
 echo 'data: ' . json_encode($state) . "\n\n";
 ob_flush();
 
