@@ -16,7 +16,7 @@ function add_english(&$state, $secrets) {
 function add_translated(&$state, $secrets) {
   $result = call_azure_translate($secrets, $state['english']);
   $state['sequence'] = 2;
-  $state['translated'] = $result['translations'][0]['text'];
+  $state['translated'] = $result['text'];
   $state['lengths']  = $result['sentLen']['transSentLen'];
   $state['pinyin'] = $result['transliteration']['text'];
 }

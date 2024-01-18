@@ -47,7 +47,7 @@ function call_azure_translate($secrets, $text) {
   $response = curl_exec($request);
   curl_close($request);
   $result = json_decode($response, true);
-  return $result[0];
+  return $result[0]['translations'][0];
 }
 
 ?>
