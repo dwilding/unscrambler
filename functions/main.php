@@ -28,11 +28,11 @@ function add_pinyin_html(&$state, $secrets) {
   $startTranslated = 0;
   $startPinyin = 0;
   for ($i = 0; $i < count($state['lengths']); $i++) {
-    $sentenceTranslated = mb_substr($state['translated'], $startTranslated, $state['lengths'][i], 'UTF-8');
-    $sentencePinyin = mb_substr($state['pinyin'], $startPinyin, $result[i], 'UTF-8');
+    $sentenceTranslated = mb_substr($state['translated'], $startTranslated, $state['lengths'][$i], 'UTF-8');
+    $sentencePinyin = mb_substr($state['pinyin'], $startPinyin, $result[$i], 'UTF-8');
     $state['pinyin_html'] .= '<p>' . htmlspecialchars($sentenceTranslated) . '<br>' . htmlspecialchars($sentencePinyin) . '</p>';
-    $startTranslated += $state['lengths'][i];
-    $startPinyin += $result[i];
+    $startTranslated += $state['lengths'][$i];
+    $startPinyin += $result[$i];
   }
 }
 
