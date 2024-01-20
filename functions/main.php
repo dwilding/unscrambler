@@ -49,11 +49,11 @@ function add_pinyin_html(&$state, $secrets) {
   $state['sequence'] = 3;
   $state['pinyinHTML'] = '<summary>Pinyin</summary>';
   if ($state['query'] == '我想 stay 两个 weeks 在中国') {
-    usleep(500000);
+    usleep(200000);
     $state['pinyinHTML'] .= '<p>我想在中国呆两个星期。<br>wǒxiǎngzài zhōngguó dāi liǎnggèxīngqī。</p>';
   }
   elseif ($state['query'] == 'zhe ge city has a hen you yi si de history') {
-    usleep(500000);
+    usleep(200000);
     $state['pinyinHTML'] .= '<p>这个城市有着非常有趣的历史。<br>zhège chéngshì yǒuzhe fēicháng yǒuqùde lìshǐ。</p>';
   }
   else {
