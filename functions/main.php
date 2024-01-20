@@ -5,11 +5,11 @@ require $_SERVER['APP_DIR_FUNCTIONS'] . '/services.php';
 function add_english(&$state, $secrets) {
   $state['sequence'] = 1;
   if ($state['query'] == '我想 stay 两个 weeks 在中国') {
-    usleep(1000000);
+    usleep(600000);
     $state['english'] = 'I want to stay in China for two weeks.';
   }
   elseif ($state['query'] == 'zhe ge city has a hen you yi si de history') {
-    usleep(1000000);
+    usleep(600000);
     $state['english'] = 'This city has a very interesting history.';
   }
   else {
@@ -26,13 +26,13 @@ function add_english(&$state, $secrets) {
 function add_translated(&$state, $secrets) {
   $state['sequence'] = 2;
   if ($state['query'] == '我想 stay 两个 weeks 在中国') {
-    usleep(500000);
+    usleep(200000);
     $state['translated'] = '我想在中国呆两个星期。';
     $state['lengths']  = [11];
     $state['pinyin'] = 'wǒxiǎngzài zhōngguó dāi liǎnggèxīngqī。';
   }
   elseif ($state['query'] == 'zhe ge city has a hen you yi si de history') {
-    usleep(500000);
+    usleep(200000);
     $state['translated'] = '这个城市有着非常有趣的历史。';
     $state['lengths']  = [14];
     $state['pinyin'] = 'zhège chéngshì yǒuzhe fēicháng yǒuqùde lìshǐ。';
