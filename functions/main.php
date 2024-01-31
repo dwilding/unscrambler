@@ -100,8 +100,14 @@ function slice_chinese(&$state, $secrets) {
       // TODO: Decide how to handle this case
       continue;
     }
-    $state['outputHTML'] .= '<p>' . htmlspecialchars(implode(' / ', $hanzi_chunks)) . '</p>';
-    $state['outputHTML'] .= '<p>' . htmlspecialchars(implode(' / ', $pinyin_chunks)) . '</p>';
+    $hanzi_display = implode(' / ', $hanzi_chunks);
+    $combo = implode("\n", array_map(
+      fn($hanzi_chunk, $pinyin_chunk) => $hanzi_chunk . ' - ' . $pinyin_chunk,
+      $hanzi_chunks,
+      $pinyin_chunks
+    ));
+
+    $state['outputHTML'] .= '<p>' . htmlspecialchars($combo) . '</p>';
   }
 }
 
