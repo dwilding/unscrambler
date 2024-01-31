@@ -82,7 +82,7 @@ if (array_key_exists('query', $_GET)) {
       </div>
       <div id="dryrun" class="<?= $dom['dryrun_class'] ?>">
         <p>
-          Insert slashes (/) to split the text into chunks, then click <strong>Slice</strong> to see a translation of each chunk.
+          Insert slashes (/) to split the text into chunks, then click <strong>Slice</strong> to translate each chunk.
         </p>
       </div>
       <div id="output" class="<?= $dom['output_class'] ?>"><?= $dom['output_html'] ?></div>
