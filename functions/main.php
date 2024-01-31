@@ -70,13 +70,27 @@ function add_pinyin_html(&$state, $secrets) {
   }
 }
 
+function break_sentences($text, $sentence_lengths) {
+  $sentences = [];
+  foreach ($sentence_lengths as $length) {
+    array_push($sentences, mb_substr($text, $start, $length, 'UTF-8'));
+    $start += $length;
+  }
+  return $sentences;
+}
+
 function slice_chinese(&$state, $secrets) {
-  $start = 0;
-  $lengths = call_azure_break_hanzi($secrets, $state['query']);
-  for ($i = 0; $i < count($lengths); $i++) {
-    $sentence = mb_substr($state['query'], $start, $lengths[$i], 'UTF-8');
-    $state['outputHTML'] .= '<p>' . htmlspecialchars($sentence) . '</p>';
-    $start += $lengths[$i];
+  $hanzi = $state['query'];
+  $pinyin = call_azure_get_pinyin($secrets, $hanzi);
+  $hanzi_sentences = break_sentences($hanzi, call_azure_break_hanzi($secrets, $hanzi));
+  $pinyin_sentences = break_sentences($pinyin, call_azure_break($secrets, $pinyin));
+  $sentences = array_map(fn($hanzi_sentence, $pinyin_sentence) => [
+    'hanzi' => $hanzi_sentence,
+    'pinyin' => $pinyin_sentence
+  ], $hanzi_sentences, $pinyin_sentences);
+  foreach ($sentences as $sentence) {
+    $state['outputHTML'] .= '<p>' . htmlspecialchars($sentence['hanzi']) . '</p>';
+    $state['outputHTML'] .= '<p>' . htmlspecialchars($sentence['pinyin']) . '</p>';
   }
 }
 
