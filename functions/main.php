@@ -70,4 +70,14 @@ function add_pinyin_html(&$state, $secrets) {
   }
 }
 
+function slice_chinese(&$state, $secrets) {
+  $start = 0;
+  $lengths = call_azure_break_hanzi($secrets, $state['query']);
+  for ($i = 0; $i < count($lengths); $i++) {
+    $sentence = mb_substr($state['query'], $start, $lengths[$i], 'UTF-8');
+    $state['outputHTML'] .= '<p>' . htmlspecialchars($sentence) . '</p>';
+    $start += $lengths[$i];
+  }
+}
+
 ?>

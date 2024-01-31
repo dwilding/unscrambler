@@ -15,14 +15,15 @@ if (array_key_exists('query', $_GET)) {
   $state = [
     'done' => false,
     'mode' => 'stream',
-    'query' => mb_substr($_GET['query'], 0, 200, 'UTF-8')
+    'query' => mb_substr($_GET['query'], 0, 200, 'UTF-8'),
+    'outputHTML' => ''
   ];
   $dom['query_value'] = htmlspecialchars($state['query']);
   $dom['opener_class'] = ''; // remove 'display' class
   if (array_key_exists('mode', $_GET)) {
     if ($_GET['mode'] == 'atomic') {
       $state['mode'] = 'atomic';
-      $state['outputHTML'] = '<p>Output TODO</p>';
+      slice_chinese($state, $secrets);
       $state['done'] = true;
       $dom['output_class'] = 'display';
       $dom['output_html'] = $state['outputHTML'];

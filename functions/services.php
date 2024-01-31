@@ -71,4 +71,25 @@ function call_azure_break($secrets, $text) {
   return $result[0]['sentLen'];
 }
 
+function call_azure_break_hanzi($secrets, $text) {
+  $request_data = [
+    [
+      'Text' => $text
+    ]
+  ];
+  $request = curl_init('https://api-nam.cognitive.microsofttranslator.com/breaksentence?api-version=3.0&language=zh-Hans');
+  curl_setopt($request, CURLOPT_POST, 1);
+  curl_setopt($request, CURLOPT_POSTFIELDS, json_encode($request_data));
+  curl_setopt($request, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/json; charset=UTF-8',
+    'Ocp-Apim-Subscription-Region: eastus',
+    'Ocp-Apim-Subscription-Key: ' . $secrets['keyAzureTranslator']
+  ]);
+  curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($request);
+  curl_close($request);
+  $result = json_decode($response, true);
+  return $result[0]['sentLen'];
+}
+
 ?>
