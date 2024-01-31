@@ -72,6 +72,7 @@ function add_pinyin_html(&$state, $secrets) {
 
 function break_sentences($text, $sentence_lengths) {
   $sentences = [];
+  $start = 0;
   foreach ($sentence_lengths as $length) {
     array_push($sentences, mb_substr($text, $start, $length, 'UTF-8'));
     $start += $length;
