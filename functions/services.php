@@ -98,7 +98,7 @@ function call_azure_get_pinyin($secrets, $text) {
       'Text' => $text
     ]
   ];
-  $request = curl_init('https://api-nam.cognitive.microsofttranslator.com/translate?api-version=3.0&language=zh-Hans&fromScript=Hans&toScript=Latn');
+  $request = curl_init('https://api-nam.cognitive.microsofttranslator.com/transliterate?api-version=3.0&language=zh-Hans&fromScript=Hans&toScript=Latn');
   curl_setopt($request, CURLOPT_POST, 1);
   curl_setopt($request, CURLOPT_POSTFIELDS, json_encode($request_data));
   curl_setopt($request, CURLOPT_HTTPHEADER, [
