@@ -68,7 +68,7 @@ if (array_key_exists('query', $_GET)) {
   </head>
   <body>
     <main>
-      <form action="/" method="GET">
+      <form action="/read" method="GET">
         <p class="action">
           <input type="hidden" name="mode" value="atomic">
           <textarea id="query" required name="query" maxlength="200" placeholder="Placeholder TODO"><?= $dom['query_value'] ?></textarea>
