@@ -50,7 +50,28 @@ function call_azure_translate($secrets, $text) {
   return $result[0]['translations'][0];
 }
 
-function call_azure_break($secrets, $text) {
+function call_azure_get_pinyin($secrets, $text) {
+  $request_data = [
+    [
+      'Text' => $text
+    ]
+  ];
+  $request = curl_init('https://api-nam.cognitive.microsofttranslator.com/transliterate?api-version=3.0&language=zh-Hans&fromScript=Hans&toScript=Latn');
+  curl_setopt($request, CURLOPT_POST, 1);
+  curl_setopt($request, CURLOPT_POSTFIELDS, json_encode($request_data));
+  curl_setopt($request, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/json; charset=UTF-8',
+    'Ocp-Apim-Subscription-Region: eastus',
+    'Ocp-Apim-Subscription-Key: ' . $secrets['keyAzureTranslator']
+  ]);
+  curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($request);
+  curl_close($request);
+  $result = json_decode($response, true);
+  return $result[0]['text'];
+}
+
+function call_azure_break_pinyin($secrets, $text) {
   $request_data = [
     [
       'Text' => $text
@@ -90,27 +111,6 @@ function call_azure_break_hanzi($secrets, $text) {
   curl_close($request);
   $result = json_decode($response, true);
   return $result[0]['sentLen'];
-}
-
-function call_azure_get_pinyin($secrets, $text) {
-  $request_data = [
-    [
-      'Text' => $text
-    ]
-  ];
-  $request = curl_init('https://api-nam.cognitive.microsofttranslator.com/transliterate?api-version=3.0&language=zh-Hans&fromScript=Hans&toScript=Latn');
-  curl_setopt($request, CURLOPT_POST, 1);
-  curl_setopt($request, CURLOPT_POSTFIELDS, json_encode($request_data));
-  curl_setopt($request, CURLOPT_HTTPHEADER, [
-    'Content-Type: application/json; charset=UTF-8',
-    'Ocp-Apim-Subscription-Region: eastus',
-    'Ocp-Apim-Subscription-Key: ' . $secrets['keyAzureTranslator']
-  ]);
-  curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
-  $response = curl_exec($request);
-  curl_close($request);
-  $result = json_decode($response, true);
-  return $result[0]['text'];
 }
 
 ?>

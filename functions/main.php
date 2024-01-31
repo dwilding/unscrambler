@@ -57,7 +57,7 @@ function add_pinyin_html(&$state, $secrets) {
     $state['pinyinHTML'] .= '<p>这个城市有着非常有趣的历史。<br>zhège chéngshì yǒuzhe fēicháng yǒuqùde lìshǐ。</p>';
   }
   else {
-    $result = call_azure_break($secrets, $state['pinyin']);
+    $result = call_azure_break_pinyin($secrets, $state['pinyin']);
     $startTranslated = 0;
     $startPinyin = 0;
     for ($i = 0; $i < count($state['lengths']); $i++) {
@@ -84,7 +84,7 @@ function slice_chinese(&$state, $secrets) {
   $hanzi = $state['query'];
   $pinyin = call_azure_get_pinyin($secrets, $hanzi);
   $hanzi_sentences = break_sentences($hanzi, call_azure_break_hanzi($secrets, $hanzi));
-  $pinyin_sentences = break_sentences($pinyin, call_azure_break($secrets, $pinyin));
+  $pinyin_sentences = break_sentences($pinyin, call_azure_break_pinyin($secrets, $pinyin));
   $sentences = array_map(fn($hanzi_sentence, $pinyin_sentence) => [
     'hanzi' => $hanzi_sentence,
     'pinyin' => $pinyin_sentence
