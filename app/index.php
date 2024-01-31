@@ -21,7 +21,6 @@ $dom = [
 //   stream=no -> full output
 //   otherwise -> query only; JS will stream in the rest
 if (array_key_exists('q', $_GET)) {
-  header('Cache-Control: no-cache');
   $state = [
     'sequence' => 0,
     'query' => mb_substr($_GET['q'], 0, 200, 'UTF-8')

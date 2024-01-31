@@ -11,7 +11,6 @@ $dom = [
   'output_class' => ''
 ];
 if (array_key_exists('query', $_GET)) {
-  header('Cache-Control: no-cache');
   $state = [
     'done' => false,
     'mode' => 'stream',
