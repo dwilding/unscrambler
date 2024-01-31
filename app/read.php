@@ -22,7 +22,9 @@ if (array_key_exists('query', $_GET)) {
   if (array_key_exists('mode', $_GET)) {
     if ($_GET['mode'] == 'atomic') {
       $state['mode'] = 'atomic';
-      slice_chinese($state, $secrets);
+      foreach (perform_slice($state, $secrets) as $new_state) {
+        $state = $new_state;
+      }
       $state['done'] = true;
       $dom['output_class'] = 'display';
       $dom['output_html'] = $state['outputHTML'];

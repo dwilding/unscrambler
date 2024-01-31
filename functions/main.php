@@ -84,7 +84,7 @@ function trim_chunks($chunks) {
   return array_map(fn($chunk) => preg_replace('/(^ +)|( +$)/u', '', $chunk), $chunks);
 }
 
-function slice_chinese(&$state, $secrets) {
+function perform_slice($state, $secrets) {
   $hanzi = $state['query'];
   $pinyin = call_azure_get_pinyin($secrets, $hanzi);
   $hanzi_sentences = split_sentences($hanzi, call_azure_break_hanzi($secrets, $hanzi));
@@ -106,8 +106,8 @@ function slice_chinese(&$state, $secrets) {
       $hanzi_chunks,
       $pinyin_chunks
     ));
-
     $state['outputHTML'] .= '<p>' . htmlspecialchars($combo) . '</p>';
+    yield $state;
   }
 }
 
