@@ -70,7 +70,7 @@ function add_pinyin_html(&$state, $secrets) {
   }
 }
 
-function break_sentences($text, $sentence_lengths) {
+function split_sentences($text, $sentence_lengths) {
   $sentences = [];
   $start = 0;
   foreach ($sentence_lengths as $length) {
@@ -80,18 +80,28 @@ function break_sentences($text, $sentence_lengths) {
   return $sentences;
 }
 
+function trim_chunks($chunks) {
+  return array_map(fn($chunk) => preg_replace('/(^ +)|( +$)/u', '', $chunk), $chunks);
+}
+
 function slice_chinese(&$state, $secrets) {
   $hanzi = $state['query'];
   $pinyin = call_azure_get_pinyin($secrets, $hanzi);
-  $hanzi_sentences = break_sentences($hanzi, call_azure_break_hanzi($secrets, $hanzi));
-  $pinyin_sentences = break_sentences($pinyin, call_azure_break_pinyin($secrets, $pinyin));
+  $hanzi_sentences = split_sentences($hanzi, call_azure_break_hanzi($secrets, $hanzi));
+  $pinyin_sentences = split_sentences($pinyin, call_azure_break_pinyin($secrets, $pinyin));
   $sentences = array_map(fn($hanzi_sentence, $pinyin_sentence) => [
     'hanzi' => $hanzi_sentence,
     'pinyin' => $pinyin_sentence
   ], $hanzi_sentences, $pinyin_sentences);
   foreach ($sentences as $sentence) {
-    $state['outputHTML'] .= '<p>' . htmlspecialchars($sentence['hanzi']) . '</p>';
-    $state['outputHTML'] .= '<p>' . htmlspecialchars($sentence['pinyin']) . '</p>';
+    $hanzi_chunks = trim_chunks(mb_split('/', $sentence['hanzi']));
+    $pinyin_chunks = trim_chunks(mb_split('/', $sentence['pinyin']));
+    if (count($hanzi_chunks) == 1) {
+      // TODO: Decide how to handle this case
+      continue;
+    }
+    $state['outputHTML'] .= '<p>' . htmlspecialchars(implode(' / ', $hanzi_chunks)) . '</p>';
+    $state['outputHTML'] .= '<p>' . htmlspecialchars(implode(' / ', $pinyin_chunks)) . '</p>';
   }
 }
 
