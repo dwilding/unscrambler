@@ -6,32 +6,29 @@ $secrets = json_decode(file_get_contents($_SERVER['APP_DIR_DATA'] . '/secrets.js
 $dom = [
   'html_state' => '',
   'query_value' => '',
-  'opener_class' => 'display',
-  'dryrun_class' => '',
-  'output_class' => ''
+  'intro_class' => 'display',
+  'ready_class' => '',
+  'output_html' => ''
 ];
 if (array_key_exists('query', $_GET)) {
   $state = [
-    'done' => false,
-    'mode' => 'stream',
+    'phase' => 'stream',
     'query' => mb_substr($_GET['query'], 0, 200, 'UTF-8'),
     'outputHTML' => ''
   ];
   $dom['query_value'] = htmlspecialchars($state['query']);
-  $dom['opener_class'] = ''; // remove 'display' class
-  if (array_key_exists('mode', $_GET)) {
-    if ($_GET['mode'] == 'atomic') {
-      $state['mode'] = 'atomic';
-      foreach (perform_slice($state, $secrets) as $new_state) {
-        $state = $new_state;
+  $dom['intro_class'] = ''; // remove 'display' class
+  if (array_key_exists('phase', $_GET)) {
+    if ($_GET['phase'] == 'end') {
+      $state['phase'] = 'end';
+      foreach (perform_slice($secrets, $state['query']) as $outputHTML) {
+        $state['outputHTML'] .= $outputHTML;
       }
-      $state['done'] = true;
-      $dom['output_class'] = 'display';
       $dom['output_html'] = $state['outputHTML'];
     }
-    elseif ($_GET['mode'] == 'dryrun') {
-      $state['mode'] = 'dryrun';
-      $dom['dryrun_class'] = 'display';
+    elseif ($_GET['phase'] == 'ready') {
+      $state['phase'] = 'ready';
+      $dom['ready_class'] = 'display';
     }
   }
   $dom['html_state'] = htmlspecialchars(json_encode($state));
@@ -72,22 +69,22 @@ if (array_key_exists('query', $_GET)) {
     <main>
       <form action="/read" method="GET">
         <p class="action">
-          <input type="hidden" name="mode" value="atomic">
+          <input type="hidden" name="phase" value="end">
           <textarea id="query" required name="query" maxlength="200" placeholder="Placeholder TODO"><?= $dom['query_value'] ?></textarea>
           <button id="slice">Slice</button>
         </p>
       </form>
-      <div id="opener" class="<?= $dom['opener_class'] ?>">
+      <div id="intro" class="<?= $dom['intro_class'] ?>">
         <p>
           Instructions TODO
         </p>
       </div>
-      <div id="dryrun" class="<?= $dom['dryrun_class'] ?>">
+      <div id="ready" class="<?= $dom['ready_class'] ?>">
         <p>
-          Use slashes (/) to mark chunks, then click <strong>Slice</strong> to translate each chunk.
+          Put slashes (/) between chunks, then click <strong>Slice</strong> to translate each chunk.
         </p>
       </div>
-      <div id="output" class="<?= $dom['output_class'] ?>"><?= $dom['output_html'] ?></div>
+      <div id="output" class="display"><?= $dom['output_html'] ?></div>
     </main>
     <footer>
       <p>
