@@ -101,12 +101,20 @@ function perform_slice($secrets, $hanzi) {
     }
     $hanzi_display = implode(' / ', $hanzi_chunks);
     $combo = implode("\n", array_map(
-      fn($hanzi_chunk, $pinyin_chunk) => $hanzi_chunk . ' - ' . $pinyin_chunk,
+      fn($hanzi_chunk, $pinyin_chunk) => $hanzi_chunk . ' (' . $pinyin_chunk . ')',
       $hanzi_chunks,
       $pinyin_chunks
     ));
+    $combo = call_gpt(
+      $secrets,
+      0.3,
+      $combo,
+      'You are a language assistant. The user will provide a Chinese sentence that has been split into chunks, with each chunk on a separate line. You must add a concise English explanation of the meaning of each chunk, using the format "CHINESE (PINYIN) - MEANING". Do not respond with anything else; no discussion is needed.'
+    );
     yield '<p>' . htmlspecialchars($combo) . '</p>';
   }
 }
 
 ?>
+
+
