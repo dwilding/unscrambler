@@ -100,21 +100,24 @@ function perform_slice($secrets, $hanzi) {
       continue;
     }
     $hanzi_display = implode(' / ', $hanzi_chunks);
-    $combo = implode("\n", array_map(
+    $outputHTML = '<p>' . htmlspecialchars($hanzi_display) . '</p><ul>';
+    $chunks = array_map(
       fn($hanzi_chunk, $pinyin_chunk) => $hanzi_chunk . ' (' . $pinyin_chunk . ')',
       $hanzi_chunks,
       $pinyin_chunks
-    ));
-    $translations = call_gpt(
-      $secrets,
-      0.3,
-      $combo,
-      'You are a language assistant. The user will provide a list of Chinese expressions (one expression per line). You must respond with a concise English translation of each expression (one translation per line). Do not respond with anything else; no discussion is needed.'
     );
-    yield '<p>' . htmlspecialchars($translations) . '</p>';
+    foreach ($chunks as $chunk) {
+      $english = call_gpt(
+        $secrets,
+        0.3,
+        $chunk,
+        'You are a language assistant. The user will provide a Chinese expression. You must respond with a concise English translation. Do not respond with anything else; no discussion is needed.'
+      );
+      $outputHTML .= '<li>' . htmlspecialchars($chunk) . ' - <em>' . htmlspecialchars($english) . '</em></li>';
+    }
+    $outputHTML .= '</ul>';
+    yield $outputHTML;
   }
 }
 
 ?>
-
-
