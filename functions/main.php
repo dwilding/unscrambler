@@ -109,7 +109,7 @@ function perform_slice($secrets, $hanzi) {
       $secrets,
       0.3,
       $combo,
-      'You are a language assistant. The user will provide a Chinese sentence that has been split into chunks, with each chunk on a separate line. You must add a concise English translation of each chunk, using the format "CHINESE (PINYIN) - TRANSLATION". Do not respond with anything else; no discussion is needed.'
+      'You are a language assistant. The user will provide a Chinese sentence that has been split into chunks, with each chunk on a separate line. You must add a concise English translation of each chunk, using the following format: CHINESE (PINYIN) - TRANSLATION. Do not respond with anything else; no discussion is needed.'
     );
     yield '<p>' . htmlspecialchars($combo) . '</p>';
   }
