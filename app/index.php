@@ -3,11 +3,11 @@
 require $_SERVER['APP_DIR_FUNCTIONS'] . '/main.php';
 $secrets = json_decode(file_get_contents($_SERVER['APP_DIR_DATA'] . '/secrets.json'), true);
 
-// For the default view (no query), show the instructions only
+// For the default view (no query), show the intro only
 $dom = [
   'html_state' => '',
   'query_value' => '',
-  'instructions_class' => 'display',
+  'intro_class' => 'display',
   'outputEnglish_class' => '',
   'outputTranslated_class' => '',
   'outputPinyin_class' => '',
@@ -26,7 +26,7 @@ if (array_key_exists('q', $_GET)) {
     'query' => mb_substr($_GET['q'], 0, 200, 'UTF-8')
   ];
   $dom['query_value'] = htmlspecialchars($state['query']);
-  $dom['instructions_class'] = ''; // remove 'display' class
+  $dom['intro_class'] = ''; // remove 'display' class
   if (array_key_exists('stream', $_GET) && $_GET['stream'] == 'no') {
     add_english($state, $secrets);
     add_translated($state, $secrets);
@@ -84,10 +84,9 @@ if (array_key_exists('q', $_GET)) {
           <button id="unscramble">Unscramble</button>
         </p>
       </form>
-      <div id="instructions" class="<?= $dom['instructions_class'] ?>">
+      <div id="intro" class="<?= $dom['intro_class'] ?>">
         <p>
-          When you click <strong>Unscramble</strong>, an AI model will generate an English version of your input.
-          The English version will then be translated into Chinese.
+          If you're trying to express something in Chinese, but don't know all the vocabulary or grammar, then click <strong>Unscramble</strong>.
           <a id="example" href="/?stream=no&q=我想%20stay%20两个%20weeks%20在中国">Get started with an example</a>
         </p>
         <p>
@@ -143,7 +142,7 @@ if (array_key_exists('q', $_GET)) {
       for (const id of [
         "query",
         "unscramble",
-        "instructions",
+        "intro",
         "example",
         "loading",
         "outputEnglish",
@@ -205,7 +204,7 @@ if (array_key_exists('q', $_GET)) {
           query: dom.query.value
         };
         history.pushState(state, null, `/?q=${encodeURIComponent(state.query)}`);
-        dom.instructions.classList.remove("display");
+        dom.intro.classList.remove("display");
         dom.outputEnglish.classList.remove("display");
         dom.outputTranslated.classList.remove("display");
         dom.outputPinyin.classList.remove("display");
@@ -245,7 +244,7 @@ if (array_key_exists('q', $_GET)) {
         }
         if (event.state === null) {
           dom.query.value = "";
-          dom.instructions.classList.add("display");
+          dom.intro.classList.add("display");
           dom.outputEnglish.classList.remove("display");
           dom.outputTranslated.classList.remove("display");
           dom.outputPinyin.classList.remove("display");
@@ -254,7 +253,7 @@ if (array_key_exists('q', $_GET)) {
         }
         else {
           dom.query.value = event.state.query;
-          dom.instructions.classList.remove("display");
+          dom.intro.classList.remove("display");
           if (event.state.sequence == 0) {
             dom.outputEnglish.classList.remove("display");
             dom.outputTranslated.classList.remove("display");
