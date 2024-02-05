@@ -86,7 +86,9 @@ if (array_key_exists('q', $_GET)) {
       </form>
       <div id="intro" class="<?= $dom['intro_class'] ?>">
         <p>
-          If you're trying to express something in Chinese, but don't know all the vocabulary or grammar, then click <strong>Unscramble</strong>.
+          If you're trying to express something in Chinese,
+          but don't know all the vocabulary or grammar,
+          enter your best effort then click <strong>Unscramble</strong>.
           <a id="example" href="/?stream=no&q=我想%20stay%20两个%20weeks%20在中国">Get started with an example</a>
         </p>
         <p>
