@@ -141,7 +141,7 @@ if (array_key_exists('q', $_GET)) {
       function demo(event, query) {
         if (!event.ctrlKey && !event.metaKey && !event.shiftKey) {
           event.preventDefault();
-          dom.query.value = "我想 stay 两个 weeks 在中国";
+          dom.query.value = query;
           unscramble();
         }
       }
