@@ -148,9 +148,10 @@ if (array_key_exists('q', $_GET)) {
         };
       }
       function unscramble() {
-        history.pushState({
+        const state = {
           query: dom.query.value
-        }, null, `/?q=${encodeURIComponent(state.query)}`);
+        };
+        history.pushState(state, null, `/?q=${encodeURIComponent(state.query)}`);
         dom.intro.classList.remove("display");
         dom.output.innerHTML = "";
         dom.tips.classList.remove("display");
