@@ -98,10 +98,11 @@ function perform_unscramble($secrets, &$state) {
     'hanzi' => $hanzi_sentence,
     'pinyin' => $pinyin_sentence
   ], $hanzi_sentences, $pinyin_sentences);
-  $state['outputHTML'] = '<p><em>' . htmlspecialchars($english) . '</em></p><p><mark>' . htmlspecialchars($hanzi) . '</mark></p><article><summary>Pinyin</summary>';
+  $state['outputHTML'] = '<p><em>' . htmlspecialchars($english) . '</em></p><p><mark>' . htmlspecialchars($hanzi) . '</mark></p><details><summary>Pinyin</summary>';
   foreach ($sentences as $sentence) {
     $state['outputHTML'] .= '<p>' . htmlspecialchars($sentence['hanzi']) . '<br>' . htmlspecialchars($sentence['pinyin']) . '</p>';
   }
+  $state['outputHTML'] .= '</details>';
 }
 
 ?>
