@@ -1,4 +1,4 @@
-# Unscrambler — Translate a mix of Chinese and English
+# Unscrambler — Write better Chinese
 
 [Unscrambler](https://unscrambler.dpw.me) is an experimental tool for people who want to improve their Chinese skills - e.g., me!
 
