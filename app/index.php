@@ -170,15 +170,19 @@ if (array_key_exists('q', $_GET)) {
         }
       });
       dom.example.addEventListener("click", event => {
-        event.preventDefault();
-        dom.query.value = "我想 stay 两个 weeks 在中国";
-        unscramble();
+        if (!event.ctrlKey && !event.metaKey && !event.shiftKey) {
+          event.preventDefault();
+          dom.query.value = "我想 stay 两个 weeks 在中国";
+          unscramble();
+        }
       });
       dom.example2.addEventListener("click", event => {
-        event.preventDefault();
-        if (stream === null) {
-          dom.query.value = "zhe ge city has a hen you yi si de history";
-          unscramble();
+        if (!event.ctrlKey && !event.metaKey && !event.shiftKey) {
+          event.preventDefault();
+          if (stream === null) {
+            dom.query.value = "zhe ge city has a hen you yi si de history";
+            unscramble();
+          }
         }
       });
       window.addEventListener("popstate", event => {
