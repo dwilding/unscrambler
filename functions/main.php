@@ -2,7 +2,7 @@
 
 function call_gpt($secrets, $temperature, $user, $system) {
   $request_data = [
-    'model' => 'gpt-3.5-turbo-1106',
+    'model' => 'gpt-3.5-turbo-0125',
     'temperature' => $temperature,
     'messages' => [
       [
