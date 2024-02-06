@@ -11,16 +11,9 @@ if (!array_key_exists('q', $_GET)) {
   exit();
 }
 $state = [
-  'sequence' => 0,
   'query' => mb_substr($_GET['q'], 0, 200, 'UTF-8')
 ];
-add_english($state, $secrets);
-echo 'data: ' . json_encode($state) . "\n\n";
-ob_flush();
-add_translated($state, $secrets);
-echo 'data: ' . json_encode($state) . "\n\n";
-ob_flush();
-add_pinyin_html($state, $secrets);
+perform_unscramble($secrets, $state);
 echo 'data: ' . json_encode($state) . "\n\n";
 ob_flush();
 

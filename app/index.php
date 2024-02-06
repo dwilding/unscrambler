@@ -8,12 +8,7 @@ $dom = [
   'html_state' => '',
   'query_value' => '',
   'intro_class' => 'display',
-  'outputEnglish_class' => '',
-  'outputTranslated_class' => '',
-  'outputPinyin_class' => '',
-  'english_value' => '',
-  'translated_value' => '',
-  'pinyin_html' => '',
+  'output_html' => '',
   'tips_class' => ''
 ];
 
@@ -22,21 +17,13 @@ $dom = [
 //   otherwise -> query only; JS will stream in the rest
 if (array_key_exists('q', $_GET)) {
   $state = [
-    'sequence' => 0,
     'query' => mb_substr($_GET['q'], 0, 200, 'UTF-8')
   ];
   $dom['query_value'] = htmlspecialchars($state['query']);
   $dom['intro_class'] = ''; // remove 'display' class
   if (array_key_exists('stream', $_GET) && $_GET['stream'] == 'no') {
-    add_english($state, $secrets);
-    add_translated($state, $secrets);
-    add_pinyin_html($state, $secrets);
-    $dom['outputEnglish_class'] = 'display';
-    $dom['outputTranslated_class'] = 'display';
-    $dom['outputPinyin_class'] = 'display';
-    $dom['english_value'] = htmlspecialchars($state['english']);
-    $dom['translated_value'] = htmlspecialchars($state['translated']);
-    $dom['pinyin_html'] = $state['pinyinHTML'];
+    perform_unscramble($secrets, $state);
+    $dom['output_html'] = $state['outputHTML'];
     if ($state['query'] == '我想 stay 两个 weeks 在中国') {
       $dom['tips_class'] = 'display';
     }
@@ -96,19 +83,7 @@ if (array_key_exists('q', $_GET)) {
           <a href="https://github.com/dwilding/unscrambler/#unscrambler--translate-a-mix-of-chinese-and-english" target="_blank">Learn more</a>
         </p>
       </div>
-      <div id="outputEnglish" class="<?= $dom['outputEnglish_class'] ?>">
-        <p>
-          <em id="english"><?= $dom['english_value'] ?></em>
-        </p>
-      </div>
-      <div id="outputTranslated" class="<?= $dom['outputTranslated_class'] ?>">
-        <p>
-          <mark id="translated"><?= $dom['translated_value'] ?></mark>
-        </p>
-      </div>
-      <div id="outputPinyin" class="<?= $dom['outputPinyin_class'] ?>">
-        <details id="pinyin"><?= $dom['pinyin_html'] ?></details>
-      </div>
+      <div id="output" class="display"><?= $dom['output_html'] ?></div>
       <div id="loading">
         <p>
           <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;" xml:space="preserve"><rect x="0" y="13" width="4" height="5" fill="currentColor"><animate attributeName="height" attributeType="XML" values="5;21;5" begin="0s" dur="0.6s" repeatCount="indefinite" /><animate attributeName="y" attributeType="XML" values="13; 5; 13" begin="0s" dur="0.6s" repeatCount="indefinite" /></rect><rect x="10" y="13" width="4" height="5" fill="currentColor"><animate attributeName="height" attributeType="XML" values="5;21;5" begin="0.15s" dur="0.6s" repeatCount="indefinite" /><animate attributeName="y" attributeType="XML" values="13; 5; 13" begin="0.15s" dur="0.6s" repeatCount="indefinite" /></rect><rect x="20" y="13" width="4" height="5" fill="currentColor"><animate attributeName="height" attributeType="XML" values="5;21;5" begin="0.3s" dur="0.6s" repeatCount="indefinite" /><animate attributeName="y" attributeType="XML" values="13; 5; 13" begin="0.3s" dur="0.6s" repeatCount="indefinite" /></rect></svg>
@@ -146,13 +121,8 @@ if (array_key_exists('q', $_GET)) {
         "unscramble",
         "intro",
         "example",
+        "output",
         "loading",
-        "outputEnglish",
-        "outputTranslated",
-        "outputPinyin",
-        "english",
-        "translated",
-        "pinyin",
         "tips",
         "example2"
       ]) {
@@ -164,52 +134,25 @@ if (array_key_exists('q', $_GET)) {
         stream = new EventSource(`/stream-query?q=${encodeURIComponent(dom.query.value)}`);
         stream.onmessage = event => {
           const state = JSON.parse(event.data);
-          if (!("sequence" in state)) {
-            dom.loading.classList.remove("display");
-            stream.close();
-            stream = null;
-            return;
+          history.replaceState(state, null, `/?q=${encodeURIComponent(state.query)}`);
+          dom.output.innerHTML = state.outputHTML;
+          dom.loading.classList.remove("display");
+          if (dom.query.value == "我想 stay 两个 weeks 在中国") {
+            dom.tips.classList.add("display");
           }
-          switch (state.sequence) {
-            case 1: {
-              dom.outputEnglish.classList.add("display");
-              dom.english.innerText = state.english;
-              break;
-            }
-            case 2: {
-              dom.outputTranslated.classList.add("display");
-              dom.translated.innerText = state.translated;
-              break;
-            }
-            case 3: {
-              dom.outputPinyin.classList.add("display");
-              dom.pinyin.innerHTML = state.pinyinHTML;
-            }
-            default: {
-              history.replaceState(state, null, `/?q=${encodeURIComponent(state.query)}`);
-              dom.loading.classList.remove("display");
-              if (dom.query.value == "我想 stay 两个 weeks 在中国") {
-                dom.tips.classList.add("display");
-              }
-              else {
-                dom.tips.classList.remove("display");
-              }
-              stream.close();
-              stream = null;
-            }
+          else {
+            dom.tips.classList.remove("display");
           }
+          stream.close();
+          stream = null;
         };
       }
       function unscramble() {
-        const state = {
-          sequence: 0,
+        history.pushState({
           query: dom.query.value
-        };
-        history.pushState(state, null, `/?q=${encodeURIComponent(state.query)}`);
+        }, null, `/?q=${encodeURIComponent(state.query)}`);
         dom.intro.classList.remove("display");
-        dom.outputEnglish.classList.remove("display");
-        dom.outputTranslated.classList.remove("display");
-        dom.outputPinyin.classList.remove("display");
+        dom.output.innerHTML = "";
         dom.tips.classList.remove("display");
         streamStart();
       }
@@ -247,29 +190,20 @@ if (array_key_exists('q', $_GET)) {
         if (event.state === null) {
           dom.query.value = "";
           dom.intro.classList.add("display");
-          dom.outputEnglish.classList.remove("display");
-          dom.outputTranslated.classList.remove("display");
-          dom.outputPinyin.classList.remove("display");
+          dom.output.innerHTML = "";
           dom.loading.classList.remove("display");
           dom.tips.classList.remove("display");
         }
         else {
           dom.query.value = event.state.query;
           dom.intro.classList.remove("display");
-          if (event.state.sequence == 0) {
-            dom.outputEnglish.classList.remove("display");
-            dom.outputTranslated.classList.remove("display");
-            dom.outputPinyin.classList.remove("display");
+          if (!("outputHTML" in event.state)) {
+            dom.output.innerHTML = "";
             dom.tips.classList.remove("display");
             streamStart();
           }
           else {
-            dom.outputEnglish.classList.add("display");
-            dom.outputTranslated.classList.add("display");
-            dom.outputPinyin.classList.add("display");
-            dom.english.innerText = event.state.english;
-            dom.translated.innerText = event.state.translated;
-            dom.pinyin.innerHTML = event.state.pinyinHTML;
+            dom.output.innerHTML = event.state.outputHTML;
             dom.loading.classList.remove("display");
             if (dom.query.value == "我想 stay 两个 weeks 在中国") {
               dom.tips.classList.add("display");
@@ -283,7 +217,7 @@ if (array_key_exists('q', $_GET)) {
       if (document.documentElement.getAttribute("data-state") != "") {
         const state = JSON.parse(document.documentElement.getAttribute("data-state"));
         history.replaceState(state, null, `/?q=${encodeURIComponent(state.query)}`);
-        if (state.sequence == 0) {
+        if (!("outputHTML" in state)) {
           streamStart();
         }
       }
