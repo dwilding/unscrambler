@@ -103,6 +103,9 @@ function perform_unscramble($secrets, &$state) {
     $state['outputHTML'] .= '<p>' . htmlspecialchars($sentence['hanzi']) . '<br>' . htmlspecialchars($sentence['pinyin']) . '</p>';
   }
   $state['outputHTML'] .= '</details>';
+  if ($state['query'] == '我想 stay 两个 weeks 在中国') {
+    $state['outputHTML'] .= '<p><strong>Tip:</strong> You can also use pinyin in your input. <a href="/?stream=no&q=zhe%20ge%20city%20has%20a%20hen%20you%20yi%20si%20de%20history" onclick="demo(event, \'zhe ge city has a hen you yi si de history\')">Try another example</a></p>';
+  }
 }
 
 ?>

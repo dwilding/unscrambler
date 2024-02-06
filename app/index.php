@@ -8,8 +8,7 @@ $dom = [
   'html_state' => '',
   'query_value' => '',
   'intro_class' => 'display',
-  'output_html' => '',
-  'tips_class' => ''
+  'output_html' => ''
 ];
 
 // If a query was provided, show the output
@@ -74,7 +73,7 @@ if (array_key_exists('q', $_GET)) {
       <div id="intro" class="<?= $dom['intro_class'] ?>">
         <p>
           If you're trying to express something in Chinese, but don't know all the vocab or grammar, write your best effort then click <strong>Unscramble</strong>.
-          <a id="example" href="/?stream=no&q=我想%20stay%20两个%20weeks%20在中国">Try an example</a>
+          <a href="/?stream=no&q=我想%20stay%20两个%20weeks%20在中国" onclick="demo(event, '我想 stay 两个 weeks 在中国')">Try an example</a>
         </p>
         <p>
           Unscrambler uses OpenAI and Microsoft services.
@@ -85,12 +84,6 @@ if (array_key_exists('q', $_GET)) {
       <div id="loading">
         <p>
           <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;" xml:space="preserve"><rect x="0" y="13" width="4" height="5" fill="currentColor"><animate attributeName="height" attributeType="XML" values="5;21;5" begin="0s" dur="0.6s" repeatCount="indefinite" /><animate attributeName="y" attributeType="XML" values="13; 5; 13" begin="0s" dur="0.6s" repeatCount="indefinite" /></rect><rect x="10" y="13" width="4" height="5" fill="currentColor"><animate attributeName="height" attributeType="XML" values="5;21;5" begin="0.15s" dur="0.6s" repeatCount="indefinite" /><animate attributeName="y" attributeType="XML" values="13; 5; 13" begin="0.15s" dur="0.6s" repeatCount="indefinite" /></rect><rect x="20" y="13" width="4" height="5" fill="currentColor"><animate attributeName="height" attributeType="XML" values="5;21;5" begin="0.3s" dur="0.6s" repeatCount="indefinite" /><animate attributeName="y" attributeType="XML" values="13; 5; 13" begin="0.3s" dur="0.6s" repeatCount="indefinite" /></rect></svg>
-        </p>
-      </div>
-      <div id="tips" class="<?= $dom['tips_class'] ?>">
-        <p>
-          <strong>Tip:</strong> You can also use pinyin in your input.
-          <a id="example2" href="/?stream=no&q=zhe%20ge%20city%20has%20a%20hen%20you%20yi%20si%20de%20history">Try another example</a>
         </p>
       </div>
     </main>
@@ -118,11 +111,8 @@ if (array_key_exists('q', $_GET)) {
         "query",
         "unscramble",
         "intro",
-        "example",
         "output",
-        "loading",
-        "tips",
-        "example2"
+        "loading"
       ]) {
         dom[id] = document.getElementById(id);
       }
@@ -135,12 +125,6 @@ if (array_key_exists('q', $_GET)) {
           history.replaceState(state, null, `/?q=${encodeURIComponent(state.query)}`);
           dom.output.innerHTML = state.outputHTML;
           dom.loading.classList.remove("display");
-          if (dom.query.value == "我想 stay 两个 weeks 在中国") {
-            dom.tips.classList.add("display");
-          }
-          else {
-            dom.tips.classList.remove("display");
-          }
           stream.close();
           stream = null;
         };
@@ -152,8 +136,14 @@ if (array_key_exists('q', $_GET)) {
         history.pushState(state, null, `/?q=${encodeURIComponent(state.query)}`);
         dom.intro.classList.remove("display");
         dom.output.innerHTML = "";
-        dom.tips.classList.remove("display");
         streamStart();
+      }
+      function demo(event, query) {
+        if (!event.ctrlKey && !event.metaKey && !event.shiftKey) {
+          event.preventDefault();
+          dom.query.value = "我想 stay 两个 weeks 在中国";
+          unscramble();
+        }
       }
       dom.query.addEventListener("keydown", event => {
         if ("key" in event && event.key.toLowerCase() == "enter") {
@@ -169,22 +159,6 @@ if (array_key_exists('q', $_GET)) {
           unscramble();
         }
       });
-      dom.example.addEventListener("click", event => {
-        if (!event.ctrlKey && !event.metaKey && !event.shiftKey) {
-          event.preventDefault();
-          dom.query.value = "我想 stay 两个 weeks 在中国";
-          unscramble();
-        }
-      });
-      dom.example2.addEventListener("click", event => {
-        if (!event.ctrlKey && !event.metaKey && !event.shiftKey) {
-          event.preventDefault();
-          if (stream === null) {
-            dom.query.value = "zhe ge city has a hen you yi si de history";
-            unscramble();
-          }
-        }
-      });
       window.addEventListener("popstate", event => {
         if (stream !== null) {
           stream.close();
@@ -195,25 +169,17 @@ if (array_key_exists('q', $_GET)) {
           dom.intro.classList.add("display");
           dom.output.innerHTML = "";
           dom.loading.classList.remove("display");
-          dom.tips.classList.remove("display");
         }
         else {
           dom.query.value = event.state.query;
           dom.intro.classList.remove("display");
           if (!("outputHTML" in event.state)) {
             dom.output.innerHTML = "";
-            dom.tips.classList.remove("display");
             streamStart();
           }
           else {
             dom.output.innerHTML = event.state.outputHTML;
             dom.loading.classList.remove("display");
-            if (dom.query.value == "我想 stay 两个 weeks 在中国") {
-              dom.tips.classList.add("display");
-            }
-            else {
-              dom.tips.classList.remove("display");
-            }
           }
         }
       });
