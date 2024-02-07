@@ -145,6 +145,12 @@ if (array_key_exists('q', $_GET)) {
           unscramble();
         }
       }
+      function convo(event, prompt) {
+        if (navigator.clipboard && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
+          event.preventDefault();
+          navigator.clipboard.writeText(prompt);
+        }
+      }
       dom.query.addEventListener("keydown", event => {
         if ("key" in event && event.key.toLowerCase() == "enter") {
           event.preventDefault();
