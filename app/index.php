@@ -73,7 +73,7 @@ if (array_key_exists('q', $_GET)) {
       <div id="intro" class="<?= $dom['intro_class'] ?>">
         <p>
           If you're trying to express something in Chinese, but don't know all the vocab or grammar, write your best effort then click <strong>Unscramble</strong>.
-          <a href="/?stream=no&q=我想%20stay%20两个%20weeks%20在中国" onclick="demo(event, '我想 stay 两个 weeks 在中国')">Try an example</a>
+          <a href="/?stream=no&q=我想%20stay%20两个%20weeks%20在中国" onclick="demo(event)">Try an example</a>
         </p>
         <p>
           Unscrambler uses OpenAI and Microsoft services.
@@ -138,19 +138,17 @@ if (array_key_exists('q', $_GET)) {
         dom.output.innerHTML = "";
         streamStart();
       }
-      function demo(event, query) {
+      function demo(event) {
         if (!event.ctrlKey && !event.metaKey && !event.shiftKey) {
           event.preventDefault();
-          dom.query.value = query;
+          dom.query.value = decodeURIComponent(event.target.getAttribute("href").replace("/?stream=no&q=", "");
           unscramble();
         }
       }
       function copy(event) {
         if (navigator.clipboard && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
           event.preventDefault();
-          let href = event.target.href;
-          const msg = decodeURIComponent(event.target.getAttribute("href").replace("/copy?msg=", ""));
-          navigator.clipboard.writeText(msg);
+          navigator.clipboard.writeText(decodeURIComponent(event.target.getAttribute("href").replace("/copy?msg=", ""));
         }
       }
       dom.query.addEventListener("keydown", event => {
