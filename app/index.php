@@ -149,7 +149,7 @@ if (array_key_exists('q', $_GET)) {
         if (navigator.clipboard && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
           event.preventDefault();
           let href = event.target.href;
-          const prompt = decodeURIComponent(event.target.href.replace("/convo?prompt=", ""));
+          const prompt = decodeURIComponent(event.target.getAttribute("href").replace("/convo?prompt=", ""));
           navigator.clipboard.writeText(prompt);
         }
       }

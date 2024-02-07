@@ -107,7 +107,7 @@ function perform_unscramble($secrets, &$state) {
     $state['outputHTML'] .= '<p><strong>Tip:</strong> You can also use pinyin in your input. <a href="/?stream=no&q=zhe%20ge%20city%20has%20a%20hen%20you%20yi%20si%20de%20history" onclick="demo(event, \'zhe ge city has a hen you yi si de history\')">Try another example</a></p>';
   }
   $convoStarter = 'I\'m trying to express "' . $state['query'] . '" in Chinese. I used a translation app, which told me to say "' . $hanzi . '". How would you suggest that I phrase what I\'m trying to say?';
-  $state['outputHTML'] .= '<p><a href="/convo?prompt=' . rawurlencode($convoStarter) . '" onclick="convo(event)">Copy AI conversation starter</a></p>';
+  $state['outputHTML'] .= '<p class="action"><a href="/convo?prompt=' . rawurlencode($convoStarter) . '" onclick="convo(event)">Copy AI conversation starter</a></p>';
 }
 
 ?>
