@@ -141,14 +141,14 @@ if (array_key_exists('q', $_GET)) {
       function demo(event) {
         if (!event.ctrlKey && !event.metaKey && !event.shiftKey) {
           event.preventDefault();
-          dom.query.value = decodeURIComponent(event.target.getAttribute("href").replace("/?stream=no&q=", "");
+          dom.query.value = decodeURIComponent(event.target.getAttribute("href").replace("/?stream=no&q=", ""));
           unscramble();
         }
       }
       function copy(event) {
         if (navigator.clipboard && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
           event.preventDefault();
-          navigator.clipboard.writeText(decodeURIComponent(event.target.getAttribute("href").replace("/copy?msg=", ""));
+          navigator.clipboard.writeText(decodeURIComponent(event.target.getAttribute("href").replace("/copy?msg=", "")));
         }
       }
       dom.query.addEventListener("keydown", event => {
