@@ -77,7 +77,7 @@ if (array_key_exists('q', $_GET)) {
         </p>
         <p>
           Unscrambler uses OpenAI and Microsoft services.
-          <a href="https://github.com/dwilding/unscrambler/#unscrambler--translate-a-mix-of-chinese-and-english" target="_blank">Learn more</a>
+          <a href="https://github.com/dwilding/unscrambler#how-it-works" target="_blank">Learn more</a>
         </p>
       </div>
       <div id="output" class="display"><?= $dom['output_html'] ?></div>
