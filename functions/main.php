@@ -91,6 +91,9 @@ function perform_unscramble($secrets, &$state) {
   $english = mb_substr($english, 0, 500, 'UTF-8');
   $translation = call_azure_translate($secrets, $english);
   $hanzi = $translation['text'];
+  $state['outputHTML'] = '<p><em>' . htmlspecialchars($english) . '</em></p><p><mark>' . htmlspecialchars($hanzi) . '</mark></p>';
+  $help_msg = 'I\'m trying to say something like "' . $state['query'] . '" in Chinese. I asked a translation app for help and it told me to say "' . $hanzi . '". Please can you explain this translation in a bit more detail?';
+  $state['outputHTML'] .= '<p class="action"><a href="/copy?msg=' . rawurlencode($help_msg) . '" onclick="copy(event)">Copy AI help request</a></p>';
   $hanzi_sentences = split_sentences($hanzi, $translation['sentLen']['transSentLen']);
   $pinyin = $translation['transliteration']['text'];
   $pinyin_sentences = split_sentences($pinyin, call_azure_break_pinyin($secrets, $pinyin));
@@ -98,7 +101,7 @@ function perform_unscramble($secrets, &$state) {
     'hanzi' => $hanzi_sentence,
     'pinyin' => $pinyin_sentence
   ], $hanzi_sentences, $pinyin_sentences);
-  $state['outputHTML'] = '<p><em>' . htmlspecialchars($english) . '</em></p><p><mark>' . htmlspecialchars($hanzi) . '</mark></p><details><summary>Pinyin</summary>';
+  $state['outputHTML'] .= '<details><summary>Pinyin</summary>';
   foreach ($sentences as $sentence) {
     $state['outputHTML'] .= '<p>' . htmlspecialchars($sentence['hanzi']) . '<br>' . htmlspecialchars($sentence['pinyin']) . '</p>';
   }
@@ -106,8 +109,6 @@ function perform_unscramble($secrets, &$state) {
   if ($state['query'] == '我想 stay 两个 weeks 在中国') {
     $state['outputHTML'] .= '<p><strong>Tip:</strong> You can also use pinyin in your input. <a href="/?stream=no&q=zhe%20ge%20city%20has%20a%20hen%20you%20yi%20si%20de%20history" onclick="demo(event, \'zhe ge city has a hen you yi si de history\')">Try another example</a></p>';
   }
-  $convoStarter = 'I\'m trying to express "' . $state['query'] . '" in Chinese. I used a translation app, which told me to say "' . $hanzi . '". How would you suggest that I phrase what I\'m trying to say?';
-  $state['outputHTML'] .= '<p class="action"><a href="/convo?prompt=' . rawurlencode($convoStarter) . '" onclick="convo(event)">Copy AI conversation starter</a></p>';
 }
 
 ?>
