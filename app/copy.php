@@ -9,7 +9,7 @@ if (array_key_exists('msg', $_GET)) {
 
 ?>
 <!DOCTYPE html>
-<html lang="en" data-state="<?= $dom['html_state'] ?>">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
