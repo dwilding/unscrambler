@@ -149,6 +149,14 @@ if (array_key_exists('q', $_GET)) {
         if (navigator.clipboard && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
           event.preventDefault();
           navigator.clipboard.writeText(decodeURIComponent(event.target.getAttribute("href").replace("/copy?msg=", "")));
+          const confirmed = document.createElement("span");
+          confirmed.textContent = "Copied!";
+          event.target.insertAdjacentElement("beforebegin", confirmed);
+          event.target.style.display = "none";
+          window.setTimeout(() => {
+            confirmed.remove();
+            event.target.style.display = "inline";
+          }, 1500);
         }
       }
       dom.query.addEventListener("keydown", event => {
