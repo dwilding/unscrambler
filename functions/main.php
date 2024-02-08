@@ -93,7 +93,7 @@ function perform_unscramble($secrets, &$state) {
   $hanzi = $translation['text'];
   $state['outputHTML'] = '<p><em>' . htmlspecialchars($english) . '</em></p><p><mark>' . htmlspecialchars($hanzi) . '</mark></p>';
   $help_msg = 'I\'m trying to say something like "' . $state['query'] . '" in Chinese. I asked a translation app for help and it told me to say "' . $hanzi . '". Please can you explain this translation in a bit more detail?';
-  $state['outputHTML'] .= '<p class="action"><a href="/copy?msg=' . rawurlencode($help_msg) . '" onclick="copy(event)">Copy AI help request</a></p>';
+  $state['outputHTML'] .= '<p class="action"><a href="/copy?msg=' . rawurlencode($help_msg) . '" target="_blank" onclick="copy(event)">Copy AI help request</a></p>';
   $hanzi_sentences = split_sentences($hanzi, $translation['sentLen']['transSentLen']);
   $pinyin = $translation['transliteration']['text'];
   $pinyin_sentences = split_sentences($pinyin, call_azure_break_pinyin($secrets, $pinyin));
