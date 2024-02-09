@@ -92,8 +92,6 @@ function perform_unscramble($secrets, &$state) {
   $translation = call_azure_translate($secrets, $english);
   $hanzi = $translation['text'];
   $state['outputHTML'] = '<p><em>' . htmlspecialchars($english) . '</em></p><p><mark>' . htmlspecialchars($hanzi) . '</mark></p>';
-  $help_msg = 'I\'m trying to say something like "' . $state['query'] . '" in Chinese. I asked a translation app for help and it told me to say "' . $hanzi . '". Please can you explain this translation in a bit more detail?';
-  $state['outputHTML'] .= '<p class="action"><a href="/copy?msg=' . rawurlencode($help_msg) . '" target="_blank" onclick="copy(event)">Copy AI help request</a></p>';
   $hanzi_sentences = split_sentences($hanzi, $translation['sentLen']['transSentLen']);
   $pinyin = $translation['transliteration']['text'];
   $pinyin_sentences = split_sentences($pinyin, call_azure_break_pinyin($secrets, $pinyin));
@@ -105,10 +103,12 @@ function perform_unscramble($secrets, &$state) {
   foreach ($sentences as $sentence) {
     $state['outputHTML'] .= '<p>' . htmlspecialchars($sentence['hanzi']) . '<br>' . htmlspecialchars($sentence['pinyin']) . '</p>';
   }
-  $state['outputHTML'] .= '</details>';
   if ($state['query'] == '我想 stay 两个 weeks 在中国') {
-    $state['outputHTML'] .= '<p><strong>Tip:</strong> You can also use pinyin in your input. <a href="/?stream=no&q=zhe%20ge%20city%20has%20a%20hen%20you%20yi%20si%20de%20history" onclick="demo(event)">Try another example</a></p>';
+    $state['outputHTML'] .= '<p>You can also use pinyin in your input. <a href="/?stream=no&q=zhe%20ge%20city%20has%20a%20hen%20you%20yi%20si%20de%20history" onclick="demo(event)">Try another example</a></p>';
   }
+  $state['outputHTML'] .= '</details>';
+  $help_msg = 'I\'m trying to say something like "' . $state['query'] . '" in Chinese. I asked a translation app for help and it told me to say "' . $hanzi . '". Please can you explain this translation in a bit more detail?';
+  $state['outputHTML'] .= '<p class="action"><a href="/copy?msg=' . rawurlencode($help_msg) . '" target="_blank" onclick="copy(event)">Copy AI help request</a></p>';
 }
 
 ?>
