@@ -58,6 +58,7 @@ if (array_key_exists('q', $_GET)) {
       }
       a svg {
         vertical-align: text-top;
+        margin-left: 0.25rem;
         text-decoration: none;
         color: var(--text-light);
       }
@@ -105,6 +106,7 @@ if (array_key_exists('q', $_GET)) {
         Acknowledgments:
         <a href="https://simplecss.org" target="_blank">Simple.css</a>,
         <a href="https://codepen.io/aurer" target="_blank">Aurer</a>,
+        <a href="https://iconoir.com" target="_blank">iconnoir</a>,
         <a href="https://www.fiverr.com/mackwhyte" target="_blank">mackwhyte</a>
       </p>
       <p>
