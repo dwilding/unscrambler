@@ -100,7 +100,7 @@ if (array_key_exists('q', $_GET)) {
     </main>
     <footer>
       <p>
-        Unscrambler is an experimental language assistant developed by <a href="https://github.com/dwilding" target="_blank">Dave Wilding</a>.
+        Unscrambler is an experimental writing assistant developed by <a href="https://github.com/dwilding" target="_blank">Dave Wilding</a>.
         The interpretation of your input may be inaccurate.
         Don't believe everything that Unscrambler tells you!
       </p>
