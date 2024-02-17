@@ -56,14 +56,16 @@ if (array_key_exists('q', $_GET)) {
         text-align: center;
         color: var(--text-light);
       }
-      a svg {
-        vertical-align: text-top;
+      a.icon {
         margin-left: 0.25rem;
         text-decoration: none;
         color: var(--text-light);
       }
-      a:hover svg {
+      a.icon:hover {
         color: var(--text);
+      }
+      a.icon svg {
+        vertical-align: text-top;
       }
       footer a {
         color: var(--text-light) !important;
