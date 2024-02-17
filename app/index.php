@@ -61,6 +61,9 @@ if (array_key_exists('q', $_GET)) {
         text-decoration: none;
         color: var(--text-light);
       }
+      a:hover svg {
+        color: var(--text);
+      }
       footer a {
         color: var(--text-light) !important;
       }
