@@ -13,3 +13,5 @@ The pinyin version of the Chinese translation is hidden by default, so that you 
  1. [GPT-3.5 Turbo](https://platform.openai.com/docs/models/gpt-3-5) generates an English version of your input.
 
  2. [Azure AI Translator](https://azure.microsoft.com/en-us/products/ai-services/ai-translator/) translates the English version into Chinese.
+
+To learn more, see [this blog post](https://maybecoding.bearblog.dev/my-attempt-at-an-ai-writing-assistant-for-chinese/).
